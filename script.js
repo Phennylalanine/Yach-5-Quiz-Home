@@ -1,4 +1,3 @@
-<script>
 window.addEventListener("DOMContentLoaded", () => {
   const overallLevelEl = document.getElementById("overallLevel");
 
@@ -20,4 +19,3 @@ window.addEventListener("DOMContentLoaded", () => {
   // Display the overall level (rounded to the nearest whole number)
   overallLevelEl.textContent = `Overall Level: ${overallLevel.toFixed(0)}`;
 });
-</script>
