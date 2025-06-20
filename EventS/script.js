@@ -79,49 +79,34 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadNextQuestion() {
-    if (currentQuestionIndex >= questions.length) {
-      currentQuestionIndex = 0;
-      shuffleArray(questions);
-    }
-
-    const question = questions[currentQuestionIndex];
-    jpText.textContent = question.jp;
-    enText.textContent = question.en;
-
-    speak(question.en);
-
-    const correctAnswer = question.en;
-    const wrongAnswers = questions.filter(q => q.en !== correctAnswer).map(q => q.en);
-    shuffleArray(wrongAnswers);
-
-    const options = [correctAnswer, ...wrongAnswers.slice(0, 3)];
-    shuffleArray(options);
-
-    choicesContainer.innerHTML = "";
-    options.forEach(opt => {
-      const span = document.createElement("span");
-      span.textContent = opt;
-      span.className = "choice-option";
-      span.style.padding = "5px 10px";
-      span.style.border = "1px solid #ccc";
-      span.style.borderRadius = "5px";
-      span.style.background = "#f9f9f9";
-      span.style.margin = "5px";
-      span.style.userSelect = "none";
-      choicesContainer.appendChild(span);
-    });
-
-    answerInput.value = "";
-    answerInput.disabled = false;
-    answerInput.focus();
-
-    feedback.textContent = "";
-    feedback.style.color = "black";
-
-    nextBtn.disabled = true;
-    tryAgainBtn.style.display = "none";
-    answered = false;
+  if (currentQuestionIndex >= questions.length) {
+    currentQuestionIndex = 0;
+    shuffleArray(questions);
   }
+
+  const question = questions[currentQuestionIndex];
+  jpText.textContent = question.jp;
+
+  // Optional: You can choose to hide or blank out the English text for challenge
+  enText.textContent = ""; // Hide English answer, or set to question.en if you want to show
+
+  speak(question.en);
+
+  // Remove answer options container content since not needed
+  if (choicesContainer) choicesContainer.innerHTML = "";
+
+  answerInput.value = "";
+  answerInput.disabled = false;
+  answerInput.focus();
+
+  feedback.textContent = "";
+  feedback.style.color = "black";
+
+  nextBtn.disabled = true;
+  tryAgainBtn.style.display = "none";
+  answered = false;
+}
+
 
   function checkAnswer() {
     if (answered) return;
