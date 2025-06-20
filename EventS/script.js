@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
   jpText.textContent = question.jp;
 
   // Optional: You can choose to hide or blank out the English text for challenge
-  enText.textContent = ""; // Hide English answer, or set to question.en if you want to show
+  enText.textContent = question.en; // Hide English answer, or set to question.en if you want to show
 
   speak(question.en);
 
