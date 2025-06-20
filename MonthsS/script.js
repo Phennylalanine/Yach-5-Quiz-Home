@@ -223,13 +223,13 @@ function updateStats() {
 }
 
 function saveProgress() {
-  localStorage.setItem("day_quiz_xp", xp);
-  localStorage.setItem("day_quiz_level", level);
+  localStorage.setItem("MonthSxp", xp);
+  localStorage.setItem("MonthSlevel", level);
 }
 
 function loadProgress() {
-  const savedXP = localStorage.getItem("day_quiz_xp");
-  const savedLevel = localStorage.getItem("day_quiz_level");
+  const savedXP = localStorage.getItem("MonthSxp");
+  const savedLevel = localStorage.getItem("MonthsSlevel");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
