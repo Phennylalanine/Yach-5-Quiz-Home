@@ -9,20 +9,6 @@ let answered = false;
 
 const maxComboForBonus = 5;
 
-// Confetti
-const confettiCanvas = document.getElementById("confettiCanvas");
-const ctx = confettiCanvas.getContext("2d");
-let confettiParticles = [];
-
-// Resize confetti canvas
-function resizeCanvas() {
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-setInterval(drawConfetti, 30);
-
 // Wait for DOM to be ready
 window.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
@@ -39,6 +25,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const levelEl = document.getElementById("level");
   const xpBar = document.getElementById("xpBar");
   const xpText = document.getElementById("xpText");
+
+  // Confetti
+  const confettiCanvas = document.getElementById("confettiCanvas");
+  const ctx = confettiCanvas.getContext("2d");
+  let confettiParticles = [];
 
   document.getElementById("startBtn").addEventListener("click", startQuiz);
   nextBtn.addEventListener("click", () => {
@@ -63,7 +54,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // Load saved XP/Level progress
   loadProgress();
 
-  // === Start Quiz Function ===
   function startQuiz() {
     document.getElementById("startScreen").classList.add("hidden");
     document.getElementById("quizScreen").classList.remove("hidden");
@@ -234,13 +224,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function saveProgress() {
-    localStorage.setItem("EventSxp", xp);
-    localStorage.setItem("EventSlevel", level);
+    localStorage.setItem("day_quiz_xp", xp);
+    localStorage.setItem("day_quiz_level", level);
   }
 
   function loadProgress() {
-    const savedXP = localStorage.getItem("EventSxp");
-    const savedLevel = localStorage.getItem("EventSlevel");
+    const savedXP = localStorage.getItem("day_quiz_xp");
+    const savedLevel = localStorage.getItem("day_quiz_level");
 
     if (savedXP !== null) xp = parseInt(savedXP, 10);
     if (savedLevel !== null) level = parseInt(savedLevel, 10);
@@ -307,4 +297,13 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
+  // ✅ Moved into DOMContentLoaded
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+  setInterval(drawConfetti, 30);
 });
