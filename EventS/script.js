@@ -224,12 +224,12 @@ function updateStats() {
 
 function saveProgress() {
   localStorage.setItem("EventSxp", xp);
-  localStorage.setItem("EventMlevel", level);
+  localStorage.setItem("EventSlevel", level);
 }
 
 function loadProgress() {
   const savedXP = localStorage.getItem("EventSxp");
-  const savedLevel = localStorage.getItem("EventMlevel");
+  const savedLevel = localStorage.getItem("EventSlevel");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
