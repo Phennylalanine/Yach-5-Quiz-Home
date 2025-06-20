@@ -21,16 +21,6 @@
       margin: 20px 0;
       color: #333;
     }
-    #levelsList {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0 30px 0;
-    }
-    #levelsList li {
-      margin: 10px 0;
-      font-size: 1.2em;
-      color: #444;
-    }
     ul {
       list-style: none;
       padding: 0;
@@ -38,14 +28,20 @@
     }
     li {
       margin: 10px 0;
+      font-size: 1.2em;
     }
     a {
       text-decoration: none;
       color: #0066cc;
-      font-size: 1.2em;
     }
     a:hover {
       text-decoration: underline;
+    }
+    .levelValue {
+      font-weight: bold;
+      color: #0066cc;
+      margin-left: 8px;
+      font-size: 1em;
     }
   </style>
 </head>
@@ -53,14 +49,31 @@
   <h1>Welcome to the Quiz Hub!</h1>
   <p id="overallLevel"></p>
 
-  <h2>Your Current Levels:</h2>
-  <ul id="levelsList"></ul>
-
   <ul>
-    <li><a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsS" target="_blank" rel="noopener noreferrer">Level 1 Months Quiz - 曜日クイズ</a></li>
-    <li><a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsM" target="_blank" rel="noopener noreferrer">Level 2 Months Quiz - 曜日クイズ</a></li>
-    <li><a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventS" target="_blank" rel="noopener noreferrer">Level 1 Activities Quiz - アクティビティクイズ</a></li>
-    <li><a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventM" target="_blank" rel="noopener noreferrer">Level 2 Activities Quiz - アクティビティクイズ</a></li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsS" target="_blank" rel="noopener noreferrer">
+        Level 1 Months Quiz - 曜日クイズ
+      </a>
+      <span class="levelValue" data-key="monthsSlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsM" target="_blank" rel="noopener noreferrer">
+        Level 2 Months Quiz - 曜日クイズ
+      </a>
+      <span class="levelValue" data-key="monthsMlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventS" target="_blank" rel="noopener noreferrer">
+        Level 1 Activities Quiz - アクティビティクイズ
+      </a>
+      <span class="levelValue" data-key="EventSlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventM" target="_blank" rel="noopener noreferrer">
+        Level 2 Activities Quiz - アクティビティクイズ
+      </a>
+      <span class="levelValue" data-key="EventMlevel">(Level: 0)</span>
+    </li>
   </ul>
 
   <script src="script.js"></script>
