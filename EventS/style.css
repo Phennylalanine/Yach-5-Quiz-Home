@@ -22,6 +22,19 @@ body {
   margin-top: 40px;
 }
 
+#startScreen {
+  display: none;
+}
+#startScreen.active {
+  display: block;
+}
+#quizScreen {
+  display: none;
+}
+#quizScreen.active {
+  display: block;
+}
+
 /* === Text Display === */
 #jpText,
 #enText {
