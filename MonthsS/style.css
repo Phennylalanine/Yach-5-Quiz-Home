@@ -45,13 +45,20 @@ body {
 }
 
 /* === Text Display === */
-#jpText,
+#jpText {
+  font-size: 1.3em;
+  margin-bottom: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+  word-break: break-word;
+}
 #enText {
   font-size: 1.3em;
   margin-bottom: 16px;
   font-weight: bold;
   color: #2c3e50;
   word-break: break-word;
+  user-select: none;
 }
 
 /* === Input === */
