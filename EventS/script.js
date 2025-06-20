@@ -9,7 +9,6 @@ let answered = false;
 
 const maxComboForBonus = 5;
 
-// Wait for DOM to be ready
 window.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
   const jpText = document.getElementById("jpText");
@@ -31,7 +30,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const ctx = confettiCanvas.getContext("2d");
   let confettiParticles = [];
 
+  // Event Listeners
   document.getElementById("startBtn").addEventListener("click", startQuiz);
+
   nextBtn.addEventListener("click", () => {
     if (answered) {
       currentQuestionIndex++;
@@ -54,20 +55,42 @@ window.addEventListener("DOMContentLoaded", () => {
   // Load saved XP/Level progress
   loadProgress();
 
-  function startQuiz() {
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("quizScreen").classList.remove("hidden");
+  // Load questions
+  fetch("questions.csv")
+    .then((response) => response.text())
+    .then((data) => {
+      questions = parseCSV(data);
+      shuffleArray(questions);
+      // Don't load question yet; wait for start
+    })
+    .catch((err) => {
+      console.error("Failed to load questions.csv:", err);
+    });
 
-    fetch("questions.csv")
-      .then((response) => response.text())
-      .then((data) => {
-        questions = parseCSV(data);
-        shuffleArray(questions);
-        loadNextQuestion();
-      })
-      .catch((err) => {
-        console.error("Failed to load questions.csv:", err);
-      });
+  // Confetti canvas resize and draw loop
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+  setInterval(drawConfetti, 30);
+
+  // --- Function declarations ---
+
+  function startQuiz() {
+    document.getElementById("quizScreen").classList.add("active");
+    document.getElementById("startScreen").classList.remove("active");
+    // Reset state
+    currentQuestionIndex = 0;
+    score = 0;
+    combo = 0;
+    answered = false;
+    // Optionally reset XP/level here if you want a fresh run each time
+    // xp = 0;
+    // level = 1;
+    updateStats();
+    loadNextQuestion();
   }
 
   function parseCSV(data) {
@@ -79,34 +102,37 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadNextQuestion() {
-  if (currentQuestionIndex >= questions.length) {
-    currentQuestionIndex = 0;
-    shuffleArray(questions);
+    if (questions.length === 0) {
+      jpText.textContent = "No questions loaded.";
+      enText.textContent = "";
+      answerInput.disabled = true;
+      nextBtn.disabled = true;
+      tryAgainBtn.style.display = "none";
+      return;
+    }
+    if (currentQuestionIndex >= questions.length) {
+      currentQuestionIndex = 0;
+      shuffleArray(questions);
+    }
+    const question = questions[currentQuestionIndex];
+    jpText.textContent = question.jp;
+    // Hide English if you want a challenge, or show for easier mode
+    enText.textContent = question.en; // Set to "" if you want to hide answer
+    speak(question.en);
+
+    if (choicesContainer) choicesContainer.innerHTML = "";
+
+    answerInput.value = "";
+    answerInput.disabled = false;
+    answerInput.focus();
+
+    feedback.textContent = "";
+    feedback.style.color = "black";
+
+    nextBtn.disabled = true;
+    tryAgainBtn.style.display = "none";
+    answered = false;
   }
-
-  const question = questions[currentQuestionIndex];
-  jpText.textContent = question.jp;
-
-  // Optional: You can choose to hide or blank out the English text for challenge
-  enText.textContent = question.en; // Hide English answer, or set to question.en if you want to show
-
-  speak(question.en);
-
-  // Remove answer options container content since not needed
-  if (choicesContainer) choicesContainer.innerHTML = "";
-
-  answerInput.value = "";
-  answerInput.disabled = false;
-  answerInput.focus();
-
-  feedback.textContent = "";
-  feedback.style.color = "black";
-
-  nextBtn.disabled = true;
-  tryAgainBtn.style.display = "none";
-  answered = false;
-}
-
 
   function checkAnswer() {
     if (answered) return;
@@ -147,7 +173,8 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      feedback.innerHTML = `✖️ <strong>Wrong!</strong><br>Your answer: <code>${comparison}</code><br>Correct answer: <span style="color: green;">${correctAnswer}</span>`;
+      feedback.innerHTML =
+        `✖️ <strong>Wrong!</strong><br>Your answer: <code>${comparison}</code><br>Correct answer: <span style="color: green;">${correctAnswer}</span>`;
       feedback.style.color = "red";
       combo = 0;
 
@@ -231,6 +258,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function speak(text) {
+    if (!text) return;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-UK";
     speechSynthesis.speak(utterance);
@@ -282,13 +310,4 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-
-  // ✅ Moved into DOMContentLoaded
-  function resizeCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-  }
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-  setInterval(drawConfetti, 30);
 });
