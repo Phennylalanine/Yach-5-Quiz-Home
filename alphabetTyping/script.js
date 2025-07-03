@@ -115,7 +115,6 @@ function handleCorrectAnswer() {
   combo++;
   score++;
 
-  // Determine bonus interval depending on combo count
   let bonusInterval = 5;
   if (combo >= 60) {
     bonusInterval = 20;
@@ -129,16 +128,10 @@ function handleCorrectAnswer() {
 
   if (combo % bonusInterval === 0) {
     if (combo >= 15) {
-      // Calculate how many 5-combo steps past 15 (floor)
       const stepsPast15 = Math.floor((combo - 15) / 5);
-      // base bonus starts at 3 for 15 combos and increases by 1 each 5 combos after
       xpBonus = 3 + stepsPast15;
-    } else {
-      // For combos less than 15, base bonus is 1
-      xpBonus = 1;
     }
 
-    // Add extra +2 XP exactly on threshold combos 30, 45, or 60
     if (combo === 30 || combo === 45 || combo === 60) {
       xpBonus += 2;
     }
@@ -191,16 +184,18 @@ function speak(text) {
   speechSynthesis.speak(utter);
 }
 
+// ✅ MODIFIED: Save XP/Level separately per game mode
 function saveProgress() {
-  localStorage.setItem("TypingXP", xp);
-  localStorage.setItem("TypingLevel", level);
+  localStorage.setItem(`TypingXP_Level${currentLevel}`, xp);
+  localStorage.setItem(`TypingLevel_Level${currentLevel}`, level);
 }
 
+// ✅ MODIFIED: Load XP/Level separately per game mode
 function loadProgress() {
-  const savedXP = localStorage.getItem("TypingXP");
-  const savedLevel = localStorage.getItem("TypingLevel");
-  if (savedXP !== null) xp = parseInt(savedXP);
-  if (savedLevel !== null) level = parseInt(savedLevel);
+  const savedXP = localStorage.getItem(`TypingXP_Level${currentLevel}`);
+  const savedLevel = localStorage.getItem(`TypingLevel_Level${currentLevel}`);
+  xp = savedXP !== null ? parseInt(savedXP) : 0;
+  level = savedLevel !== null ? parseInt(savedLevel) : 1;
 }
 
 function showFloatingXP(text) {
