@@ -1,28 +1,85 @@
-window.addEventListener("DOMContentLoaded", () => {
-  const overallLevelEl = document.getElementById("overallLevel");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Hub - Overall Level</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f0f0f0;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #overallLevel {
+      font-size: 1.5em;
+      margin: 20px 0;
+      color: #333;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 30px 0 0 0;
+    }
+    li {
+      margin: 10px 0;
+      font-size: 1.2em;
+    }
+    a {
+      text-decoration: none;
+      color: #0066cc;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .levelValue {
+      font-weight: bold;
+      color: #0066cc;
+      margin-left: 8px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the Quiz Hub!</h1>
+  <p id="overallLevel"></p>
 
-  const quizData = [
-    { key: "monthsSlevel", multiplier: 0.6 },
-    { key: "EventSlevel", multiplier: 0.6 },
-    { key: "monthsMlevel", multiplier: 1.2 },
-    { key: "eventsMlevel", multiplier: 1.2 },
-    { key: "TypingLevel_Level1", multiplier: 1.0 },
-    { key: "TypingLevel_Level2", multiplier: 1.0 }
-  ];
+  <ul>
+    <li>
+ <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/alphabetTyping" target="_blank" rel="noopener noreferrer">
+        Alphabet Keyboard Practice - キーボードの練習
+      </a>
+      
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsS" target="_blank" rel="noopener noreferrer">
+        Level 1 Months Quiz - 月クイズ
+      </a>
+      <span class="levelValue" data-key="monthsSlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsM" target="_blank" rel="noopener noreferrer">
+        Level 2 Months Quiz - 月クイズ
+      </a>
+      <span class="levelValue" data-key="monthsMlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventS" target="_blank" rel="noopener noreferrer">
+        Level 1 Activities Quiz - アクティビティクイズ
+      </a>
+      <span class="levelValue" data-key="EventSlevel">(Level: 0)</span>
+    </li>
+    <li>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventM" target="_blank" rel="noopener noreferrer">
+        Level 2 Activities Quiz - アクティビティクイズ
+      </a>
+      <span class="levelValue" data-key="EventMlevel">(Level: 0)</span>
+    </li>
+  </ul>
 
-  const overallLevel = quizData.reduce((sum, { key, multiplier }) => {
-    const value = parseInt(localStorage.getItem(key)) || 0;
-    return sum + value * multiplier;
-  }, 0);
-
-  overallLevelEl.textContent =
-    overallLevel > 0
-      ? `Overall Level: ${overallLevel.toFixed(0)}`
-      : "Overall Level: No data yet.";
-
-  document.querySelectorAll(".levelValue").forEach((span) => {
-    const key = span.getAttribute("data-key");
-    const levelValue = parseInt(localStorage.getItem(key)) || 0;
-    span.textContent = `(Level: ${levelValue})`;
-  });
-});
+  <script src="script.js"></script>
+</body>
+</html>
