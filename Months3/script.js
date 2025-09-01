@@ -17,6 +17,7 @@ const feedback = document.getElementById("feedback");
 const nextBtn = document.getElementById("nextBtn");
 const tryAgainBtn = document.getElementById("tryAgainBtn");
 const choicesContainer = document.getElementById("choicesText");
+const wordBank = document.getElementById("wordBank");
 
 const pointsEl = document.getElementById("points");
 const comboEl = document.getElementById("combo");
@@ -28,6 +29,12 @@ const xpText = document.getElementById("xpText");
 const confettiCanvas = document.getElementById("confettiCanvas");
 const ctx = confettiCanvas.getContext("2d");
 let confettiParticles = [];
+
+// Word bank months (for Round 3)
+const months = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+];
 
 // Event Listeners
 document.getElementById("startBtn").addEventListener("click", startQuiz);
@@ -53,10 +60,12 @@ tryAgainBtn.addEventListener("click", tryAgain);
 // Load progress
 loadProgress();
 
+// Start Quiz
 function startQuiz() {
   document.getElementById("startScreen").classList.remove("active");
   document.getElementById("quizScreen").classList.add("active");
 
+  // Load CSV for Round 3 (or replace with your own CSV per round)
   fetch("questions.csv")
     .then((response) => response.text())
     .then((data) => {
@@ -69,67 +78,47 @@ function startQuiz() {
     });
 }
 
+// Parse CSV
 function parseCSV(data) {
   const lines = data.trim().split("\n");
   return lines.slice(1).map((line) => {
-    const [jp, en] = line.split(",");
-    return { jp: jp.trim(), en: en.trim() };
+    const [jp, question, answer] = line.split(",");
+    return { jp: jp.trim(), question: question.trim(), answer: answer.trim() };
   });
 }
 
+// Load next question
 function loadNextQuestion() {
   if (currentQuestionIndex >= questions.length) {
     currentQuestionIndex = 0;
     shuffleArray(questions);
   }
 
-  const question = questions[currentQuestionIndex];
-  jpText.textContent = question.jp;
-  // Removed the line: enText.textContent = question.en;
-
-  speak(question.en);
-
-  const correctAnswer = question.en;
-  const wrongAnswers = questions.filter(q => q.en !== correctAnswer).map(q => q.en);
-  shuffleArray(wrongAnswers);
-
-  const options = [correctAnswer, ...wrongAnswers.slice(0, 3)];
-  shuffleArray(options);
-
-  choicesContainer.innerHTML = "";
-  options.forEach(opt => {
-    const span = document.createElement("span");
-    span.textContent = opt;
-    span.className = "choice-option";
-    span.style.padding = "5px 10px";
-    span.style.border = "1px solid #ccc";
-    span.style.borderRadius = "5px";
-    span.style.background = "#f9f9f9";
-    span.style.margin = "5px";
-    span.style.userSelect = "none";
-    choicesContainer.appendChild(span);
-  });
-
+  const q = questions[currentQuestionIndex];
+  jpText.textContent = q.jp;
+  enText.textContent = q.question; // Partial English sentence with blank
   answerInput.value = "";
-  answerInput.disabled = false;
-  answerInput.focus();
-
   feedback.textContent = "";
-  feedback.style.color = "black";
-
   nextBtn.disabled = true;
   tryAgainBtn.style.display = "none";
+  answerInput.disabled = false;
+  answerInput.focus();
   answered = false;
+
+  // Show shuffled month word bank (Round 3)
+  const shuffledMonths = shuffle([...months]);
+  wordBank.innerHTML = shuffledMonths.map(m => `<span class="choice-option">${m}</span>`).join(" ");
 }
 
+// Check Answer
 function checkAnswer() {
   if (answered) return;
   answered = true;
 
   const userAnswer = answerInput.value.trim();
-  const correctAnswer = questions[currentQuestionIndex].en;
+  const correctAnswer = questions[currentQuestionIndex].answer;
 
-  if (userAnswer === correctAnswer) {
+  if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
     feedback.innerHTML = "✔️ <strong>Correct!</strong>";
     feedback.style.color = "green";
     combo++;
@@ -164,7 +153,6 @@ function checkAnswer() {
     feedback.innerHTML = `✖️ <strong>Wrong!</strong><br>Your answer: <code>${comparison}</code><br>Correct answer: <span style="color: green;">${correctAnswer}</span>`;
     feedback.style.color = "red";
     combo = 0;
-
     updateStats();
 
     answerInput.disabled = true;
@@ -173,6 +161,7 @@ function checkAnswer() {
   }
 }
 
+// Try Again
 function tryAgain() {
   feedback.textContent = "";
   feedback.style.color = "black";
@@ -185,6 +174,7 @@ function tryAgain() {
   answered = false;
 }
 
+// XP & Level
 function gainXP(amount) {
   let levelBefore = level;
   xp += amount;
@@ -222,13 +212,14 @@ function updateStats() {
   xpText.textContent = `${xp} / ${needed}`;
 }
 
+// Local Storage
 function saveProgress() {
   localStorage.setItem("EventMxp", xp);
   localStorage.setItem("EventMlevel", level);
 }
 
 function loadProgress() {
-  const savedXP = localStorage.getItem("EventMxpp");
+  const savedXP = localStorage.getItem("EventMxp");
   const savedLevel = localStorage.getItem("EventMlevel");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
@@ -237,11 +228,13 @@ function loadProgress() {
   updateStats();
 }
 
+// Helpers
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
+  return array;
 }
 
 function speak(text) {
@@ -260,6 +253,7 @@ function showFloatingXP(text) {
   setTimeout(() => xpElem.remove(), 1500);
 }
 
+// Confetti
 function triggerConfetti() {
   for (let i = 0; i < 100; i++) {
     confettiParticles.push({
@@ -281,26 +275,4 @@ function drawConfetti() {
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
     ctx.fill();
   });
-  updateConfetti();
-}
-
-function updateConfetti() {
-  for (let i = 0; i < confettiParticles.length; i++) {
-    const p = confettiParticles[i];
-    p.y += p.d;
-    p.x += Math.sin(p.tilt) * 2;
-
-    if (p.y > confettiCanvas.height) {
-      confettiParticles.splice(i, 1);
-      i--;
-    }
-  }
-}
-
-function resizeCanvas() {
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-setInterval(drawConfetti, 30);
+  updateConf
