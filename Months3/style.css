@@ -18,7 +18,6 @@ body {
   min-height: 100vh;
   width: 100vw;
   margin: 0;
-  /* Use flex to center everything vertically/horizontally */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,10 +27,10 @@ body {
 /* === Start and Quiz Screens === */
 #startScreen,
 #quizScreen {
-  margin: 0; /* Remove top margin */
+  margin: 0;
   padding: 0;
   width: 100%;
-  max-width: 420px; /* Limit width for large screens */
+  max-width: 420px;
   min-height: 0;
   box-sizing: border-box;
   display: none;
@@ -62,7 +61,7 @@ body {
   max-width: 220px;
   border: 2px solid #ddd;
   border-radius: 10px;
-  margin-bottom: 8px; /* Keep buttons closer */
+  margin-bottom: 8px;
   transition: border-color 0.3s;
 }
 #answerInput:focus {
@@ -81,7 +80,7 @@ body {
 #nextBtn,
 #tryAgainBtn,
 #startBtn {
-  margin: 4px 6px 0 6px; /* less vertical space, closer to input */
+  margin: 4px 6px 0 6px;
   padding: 10px 20px;
   font-size: 1em;
   cursor: pointer;
@@ -187,6 +186,15 @@ body {
   background-color: #e0f2f1;
 }
 
+/* === Word Bank (Round 3) === */
+#wordBank {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
 /* === Responsive === */
 @media (max-width: 500px) {
   #startScreen,
@@ -196,5 +204,9 @@ body {
   #xpBarContainer {
     width: 98vw;
     max-width: 160px;
+  }
+  #wordBank {
+    max-width: 360px;
+    gap: 6px;
   }
 }
