@@ -65,7 +65,6 @@ function startQuiz() {
   document.getElementById("startScreen").classList.remove("active");
   document.getElementById("quizScreen").classList.add("active");
 
-  // Load CSV for Round 3 (or replace with your own CSV per round)
   fetch("questions.csv")
     .then((response) => response.text())
     .then((data) => {
@@ -108,6 +107,14 @@ function loadNextQuestion() {
   // Show shuffled month word bank (Round 3)
   const shuffledMonths = shuffle([...months]);
   wordBank.innerHTML = shuffledMonths.map(m => `<span class="choice-option">${m}</span>`).join(" ");
+
+  // Add click event to word bank
+  document.querySelectorAll("#wordBank .choice-option").forEach(span => {
+    span.addEventListener("click", () => {
+      answerInput.value = span.textContent;
+      checkAnswer();
+    });
+  });
 }
 
 // Check Answer
@@ -237,6 +244,10 @@ function shuffleArray(array) {
   return array;
 }
 
+function shuffle(array) {
+  return shuffleArray([...array]);
+}
+
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-UK";
@@ -275,4 +286,8 @@ function drawConfetti() {
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
     ctx.fill();
   });
-  updateConf
+  updateConfetti();
+}
+
+function updateConfetti() {
+  for (let i = 0; i < confettiParticles.length; i++) {
