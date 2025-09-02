@@ -117,7 +117,7 @@ function loadNextQuestion() {
   });
 }
 
-// Check Answer
+// Check Answer (case-sensitive)
 function checkAnswer() {
   if (answered) return;
   answered = true;
@@ -125,7 +125,7 @@ function checkAnswer() {
   const userAnswer = answerInput.value.trim();
   const correctAnswer = questions[currentQuestionIndex].answer;
 
-  if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+  if (userAnswer === correctAnswer) {  // ✅ Case-sensitive
     feedback.innerHTML = "✔️ <strong>Correct!</strong>";
     feedback.style.color = "green";
     combo++;
