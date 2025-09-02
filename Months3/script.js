@@ -291,3 +291,18 @@ function drawConfetti() {
 
 function updateConfetti() {
   for (let i = 0; i < confettiParticles.length; i++) {
+    const p = confettiParticles[i];
+    p.y += p.d;
+    p.x += Math.sin(p.y * 0.05) * 2;
+    p.tilt = Math.sin(p.y * 0.1) * 10;
+    if (p.y > window.innerHeight) {
+      confettiParticles.splice(i, 1);
+      i--;
+    }
+  }
+  requestAnimationFrame(drawConfetti);
+}
+
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+drawConfetti();
