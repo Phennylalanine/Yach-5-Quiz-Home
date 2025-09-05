@@ -6,8 +6,6 @@ let revealTimer = null;
 let currentQuestionIndex = 0;
 let score = 0;
 let combo = 0;
-let level = 1;
-let xp = 0;
 let answered = false;
 
 const maxComboForBonus = 5;
@@ -21,8 +19,6 @@ const letterDisplay = document.getElementById("letterDisplay");
 const pointsEl = document.getElementById("points");
 const comboEl = document.getElementById("combo");
 const levelEl = document.getElementById("level");
-const xpBar = document.getElementById("xpBar");
-const xpText = document.getElementById("xpText");
 const confettiCanvas = document.getElementById("confettiCanvas");
 const ctx = confettiCanvas.getContext("2d");
 
@@ -48,12 +44,19 @@ startBtn.addEventListener("click", () => {
   }
 });
 
-// Keyboard input listener
+// Keyboard input listener (score system and penalty, no XP/level)
 window.addEventListener("keydown", (e) => {
   if (!currentChar) return;
-  if (e.key.toLowerCase() === currentChar.toLowerCase()) {
+  const pressedKey = e.key.toLowerCase();
+  const targetKey = currentChar.toLowerCase();
+  if (pressedKey === targetKey) {
     clearTimeout(revealTimer);
     handleCorrectAnswer();
+  } else if (keys.includes(pressedKey)) {
+    // Wrong key pressed
+    combo = 0;
+    score = Math.max(0, score - 1); // Prevent negative score
+    updateStats();
   }
 });
 
@@ -80,11 +83,8 @@ function startGame(levelNumber) {
   currentChar = '';
   score = 0;
   combo = 0;
-  xp = 0;
-  level = 1;
   answered = false;
   updateStats();
-  loadProgress();
   nextChar();
 }
 
@@ -115,67 +115,17 @@ function handleCorrectAnswer() {
   combo++;
   score++;
 
-  let bonusInterval = 5;
-  if (combo >= 60) {
-    bonusInterval = 20;
-  } else if (combo >= 45) {
-    bonusInterval = 15;
-  } else if (combo >= 30) {
-    bonusInterval = 10;
-  }
-
-  let xpBonus = 1;
-
-  if (combo % bonusInterval === 0) {
-    if (combo >= 15) {
-      const stepsPast15 = Math.floor((combo - 15) / 5);
-      xpBonus = 3 + stepsPast15;
-    }
-
-    if (combo === 30 || combo === 45 || combo === 60) {
-      xpBonus += 2;
-    }
-  }
-
-  gainXP(xpBonus);
-  if (xpBonus > 0) {
-    showFloatingXP(`+${xpBonus} XP`);
-  }
+  // Combo bonus logic (if you want to implement special effects or messaging at certain combos, do it here)
 
   updateStats();
   nextChar();
 }
 
-function gainXP(amount) {
-  let levelBefore = level;
-  xp += amount;
-  while (xp >= xpToNextLevel(level)) {
-    xp -= xpToNextLevel(level);
-    level++;
-  }
-  if (level > levelBefore) {
-    triggerConfetti();
-  }
-  saveProgress();
-  updateStats();
-}
-
-function xpToNextLevel(currentLevel) {
-  let xpRequired = 3;
-  for (let i = 2; i <= currentLevel; i++) {
-    xpRequired += i;
-  }
-  return xpRequired;
-}
-
 function updateStats() {
   pointsEl.textContent = score;
   comboEl.textContent = combo;
-  levelEl.textContent = level;
-  const needed = xpToNextLevel(level);
-  const percent = (xp / needed) * 100;
-  xpBar.style.width = `${Math.min(percent, 100)}%`;
-  xpText.textContent = `${xp} / ${needed}`;
+  // If you want to show level somewhere, you can remove this line or keep it for currentLevel
+  levelEl.textContent = currentLevel;
 }
 
 function speak(text) {
@@ -184,28 +134,8 @@ function speak(text) {
   speechSynthesis.speak(utter);
 }
 
-// ✅ MODIFIED: Save XP/Level separately per game mode
-function saveProgress() {
-  localStorage.setItem(`TypingXP_Level${currentLevel}`, xp);
-  localStorage.setItem(`TypingLevel_Level${currentLevel}`, level);
-}
-
-// ✅ MODIFIED: Load XP/Level separately per game mode
-function loadProgress() {
-  const savedXP = localStorage.getItem(`TypingXP_Level${currentLevel}`);
-  const savedLevel = localStorage.getItem(`TypingLevel_Level${currentLevel}`);
-  xp = savedXP !== null ? parseInt(savedXP) : 0;
-  level = savedLevel !== null ? parseInt(savedLevel) : 1;
-}
-
 function showFloatingXP(text) {
-  const xpElem = document.createElement("div");
-  xpElem.textContent = text;
-  xpElem.className = "floating-xp";
-  xpElem.style.left = `${Math.random() * 80 + 10}%`;
-  xpElem.style.top = "50%";
-  document.body.appendChild(xpElem);
-  setTimeout(() => xpElem.remove(), 1500);
+  // Function kept for compatibility, but not used since XP is removed
 }
 
 function triggerConfetti() {
