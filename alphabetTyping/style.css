@@ -1,163 +1,113 @@
-// --- Game Variables ---
-let currentChar = '';
-let currentLevel = 1; // Only Level 1 remains
-
-let score = 0;
-let combo = 0;
-let answered = false;
-
-const keys = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const keyMap = {};
-keys.forEach(k => keyMap[k] = 'key-' + k);
-
-// DOM Elements
-const letterDisplay = document.getElementById("letterDisplay");
-const pointsEl = document.getElementById("points");
-const comboEl = document.getElementById("combo");
-const levelEl = document.getElementById("level");
-const confettiCanvas = document.getElementById("confettiCanvas");
-const ctx = confettiCanvas.getContext("2d");
-
-let confettiParticles = [];
-
-const startBtn = document.getElementById("startBtn");
-
-// Level select logic (only Level 1)
-document.querySelectorAll(".level-select").forEach(button => {
-  button.addEventListener("click", () => {
-    selectLevel(1);
-  });
-});
-
-// Start button logic
-startBtn.addEventListener("click", () => {
-  document.getElementById("startScreen").classList.remove("active");
-  document.getElementById("gameScreen").classList.add("active");
-  startGame(1);
-});
-
-// Keyboard input listener
-window.addEventListener("keydown", (e) => {
-  if (!currentChar) return;
-  const pressedKey = e.key.toLowerCase();
-  const targetKey = currentChar.toLowerCase();
-  if (pressedKey === targetKey) {
-    handleCorrectAnswer();
-  } else if (keys.includes(pressedKey)) {
-    combo = 0;
-    score = Math.max(0, score - 1);
-    updateStats();
-    flashWrongKey();
-  }
-});
-
-// Functions
-
-function flashWrongKey() {
-  letterDisplay.classList.add("flash-wrong");
-  setTimeout(() => {
-    letterDisplay.classList.remove("flash-wrong");
-  }, 200);
+body {
+  background: #f3f3f3;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
-function selectLevel(level) {
-  currentLevel = 1;
-  startBtn.disabled = false;
-  document.querySelectorAll(".level-select").forEach(btn => btn.classList.remove("selected"));
-  document.querySelectorAll(".level-select")[0].classList.add("selected");
+#gameWrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-function startGame(levelNumber) {
-  currentLevel = 1;
-  currentChar = '';
-  score = 0;
-  combo = 0;
-  answered = false;
-  updateStats();
-  nextChar();
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #222;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-function nextChar() {
-  removeHighlight();
-  currentChar = keys[Math.floor(Math.random() * keys.length)];
-  letterDisplay.textContent = currentChar.toUpperCase();
-  speak(currentChar);
-  highlightKey(currentChar);
+#letterDisplay {
+  font-size: 2.5rem;
+  color: #23395d;
+  text-align: center;
+  margin-bottom: 1rem;
+  transition: background 0.2s;
 }
 
-function highlightKey(char) {
-  removeHighlight();
-  const id = keyMap[char.toLowerCase()];
-  const el = document.getElementById(id);
-  if (el) el.classList.add('highlight');
+.flash-wrong {
+  background: #ffabab;
+  border-radius: 8px;
 }
 
-function removeHighlight() {
-  document.querySelectorAll('.key').forEach(el => el.classList.remove('highlight'));
+.stats {
+  color: #23395d;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-function handleCorrectAnswer() {
-  combo++;
-  score++;
-  updateStats();
-  nextChar();
+.progress-bar {
+  width: 300px;
+  height: 18px;
+  background: #e0e0e0;
+  border-radius: 8px;
+  margin: 0 auto 1.4rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-function updateStats() {
-  pointsEl.textContent = score;
-  comboEl.textContent = combo;
-  levelEl.textContent = currentLevel;
+.progress-bar span {
+  color: #397d02;
+  font-weight: bold;
 }
 
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    speechSynthesis.speak(utter);
-  }
+.keyboard-container {
+  margin-top: 1.2em;
+  display: flex;
+  justify-content: center;
 }
 
-// Confetti functions
-function triggerConfetti() {
-  for (let i = 0; i < 100; i++) {
-    confettiParticles.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * -20,
-      r: Math.random() * 6 + 2,
-      d: Math.random() * 12.5 + 1,
-      color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`,
-      tilt: Math.random() * 10 - 10,
-    });
-  }
+.keyboard {
+  background: #222;
+  border-radius: 16px;
+  padding: 1.2em 2em;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+  display: grid;
+  grid-template-columns: repeat(10, 45px);
+  grid-gap: 10px;
 }
 
-function drawConfetti() {
-  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-  confettiParticles.forEach((p) => {
-    ctx.beginPath();
-    ctx.fillStyle = p.color;
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  updateConfetti();
+.key {
+  font-size: 1.2rem;
+  font-weight: 500;
+  background: #444;
+  color: #eee;
+  border: none;
+  border-radius: 8px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.09);
 }
 
-function updateConfetti() {
-  for (let i = 0; i < confettiParticles.length; i++) {
-    const p = confettiParticles[i];
-    p.y += p.d;
-    p.x += Math.sin(p.tilt) * 2;
-    if (p.y > confettiCanvas.height) {
-      confettiParticles.splice(i, 1);
-      i--;
-    }
-  }
+.key.highlight {
+  background: #ffe600;
+  color: #222;
+  font-weight: bold;
+  border: 2px solid #b5a800;
 }
 
-function resizeCanvas() {
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
+.level-select.selected {
+  background: #397d02;
+  color: #fff;
 }
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-setInterval(drawConfetti, 30);
+
+#confettiCanvas {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 10;
+}
