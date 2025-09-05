@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="startScreen">
+  <div id="startScreen" class="active">
     <h1>Alphabet Typing Game</h1>
     <div>
       <button class="level-select selected">Level 1</button>
@@ -14,9 +14,9 @@
     <button id="startBtn" disabled>Start</button>
   </div>
 
-  <div id="gameScreen" style="display:none;">
+  <div id="gameScreen">
     <div id="letterDisplay"></div>
-    <div>
+    <div class="stats-panel">
       <span>Points: <span id="points">0</span></span>
       <span>Combo: <span id="combo">0</span></span>
       <span>Level: <span id="level">1</span></span>
