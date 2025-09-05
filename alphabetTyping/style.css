@@ -177,3 +177,12 @@ button.level-select.selected {
   background-color: #2196f3; /* Blue */
   color: white;
 }
+.flash-wrong {
+  animation: flashWrong 200ms;
+}
+
+@keyframes flashWrong {
+  0% { background-color: #ff4c4c; }
+  100% { background-color: transparent; }
+}
+
