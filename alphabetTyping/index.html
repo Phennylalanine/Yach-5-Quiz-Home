@@ -10,7 +10,6 @@
     <h1>Alphabet Typing Game</h1>
     <div>
       <button class="level-select selected">Level 1</button>
-      <!-- Level 2 button removed -->
     </div>
     <button id="startBtn" disabled>Start</button>
   </div>
@@ -23,33 +22,38 @@
       <span>Level: <span id="level">1</span></span>
     </div>
     <div id="keyboard">
-      <!-- Render keys, for full alphabet: -->
-      <button class="key" id="key-a">A</button>
-      <button class="key" id="key-b">B</button>
-      <button class="key" id="key-c">C</button>
-      <button class="key" id="key-d">D</button>
-      <button class="key" id="key-e">E</button>
-      <button class="key" id="key-f">F</button>
-      <button class="key" id="key-g">G</button>
-      <button class="key" id="key-h">H</button>
-      <button class="key" id="key-i">I</button>
-      <button class="key" id="key-j">J</button>
-      <button class="key" id="key-k">K</button>
-      <button class="key" id="key-l">L</button>
-      <button class="key" id="key-m">M</button>
-      <button class="key" id="key-n">N</button>
-      <button class="key" id="key-o">O</button>
-      <button class="key" id="key-p">P</button>
-      <button class="key" id="key-q">Q</button>
-      <button class="key" id="key-r">R</button>
-      <button class="key" id="key-s">S</button>
-      <button class="key" id="key-t">T</button>
-      <button class="key" id="key-u">U</button>
-      <button class="key" id="key-v">V</button>
-      <button class="key" id="key-w">W</button>
-      <button class="key" id="key-x">X</button>
-      <button class="key" id="key-y">Y</button>
-      <button class="key" id="key-z">Z</button>
+      <div class="keyboard-row">
+        <button class="key" id="key-q">Q</button>
+        <button class="key" id="key-w">W</button>
+        <button class="key" id="key-e">E</button>
+        <button class="key" id="key-r">R</button>
+        <button class="key" id="key-t">T</button>
+        <button class="key" id="key-y">Y</button>
+        <button class="key" id="key-u">U</button>
+        <button class="key" id="key-i">I</button>
+        <button class="key" id="key-o">O</button>
+        <button class="key" id="key-p">P</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="key" id="key-a">A</button>
+        <button class="key" id="key-s">S</button>
+        <button class="key" id="key-d">D</button>
+        <button class="key" id="key-f">F</button>
+        <button class="key" id="key-g">G</button>
+        <button class="key" id="key-h">H</button>
+        <button class="key" id="key-j">J</button>
+        <button class="key" id="key-k">K</button>
+        <button class="key" id="key-l">L</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="key" id="key-z">Z</button>
+        <button class="key" id="key-x">X</button>
+        <button class="key" id="key-c">C</button>
+        <button class="key" id="key-v">V</button>
+        <button class="key" id="key-b">B</button>
+        <button class="key" id="key-n">N</button>
+        <button class="key" id="key-m">M</button>
+      </div>
     </div>
     <canvas id="confettiCanvas"></canvas>
   </div>
