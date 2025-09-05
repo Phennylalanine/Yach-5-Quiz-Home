@@ -1,177 +1,163 @@
-/* === Visibility Classes === */
-.hidden { display: none; }
-.active { display: flex; }
+// --- Game Variables ---
+let currentChar = '';
+let currentLevel = 1; // Only Level 1 remains
 
-/* === Page Layout === */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+let score = 0;
+let combo = 0;
+let answered = false;
 
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f4f4;
-  color: #333;
-  min-height: 100vh;
-  width: 100vw;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+const keys = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const keyMap = {};
+keys.forEach(k => keyMap[k] = 'key-' + k);
 
-/* === Start and Game Screens === */
-#startScreen,
-#gameScreen {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  max-width: 420px;
-  min-height: 0;
-  box-sizing: border-box;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#startScreen.active,
-#gameScreen.active {
-  display: flex;
-}
+// DOM Elements
+const letterDisplay = document.getElementById("letterDisplay");
+const pointsEl = document.getElementById("points");
+const comboEl = document.getElementById("combo");
+const levelEl = document.getElementById("level");
+const confettiCanvas = document.getElementById("confettiCanvas");
+const ctx = confettiCanvas.getContext("2d");
 
-/* === Letter Display === */
-#letterDisplay {
-  font-size: 3em;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 22px 0 18px 0;
-  min-height: 70px;
-  text-align: center;
-  letter-spacing: 2px;
-  width: 100%;
-  transition: background 0.2s;
-}
+let confettiParticles = [];
 
-/* === Red Flash Wrong Key Effect === */
-.flash-wrong {
-  animation: flashWrong 200ms;
-}
-@keyframes flashWrong {
-  0% { background-color: #ff4c4c; }
-  100% { background-color: transparent; }
-}
+const startBtn = document.getElementById("startBtn");
 
-/* === Stats Panel === */
-.stats-panel {
-  width: 100%;
-  margin-bottom: 16px;
-  font-size: 1em;
-  color: #34495e;
-  display: flex;
-  justify-content: space-around;
-  user-select: none;
-}
-.stats-panel span {
-  font-weight: 700;
-  color: #2c3e50;
-}
+// Level select logic (only Level 1)
+document.querySelectorAll(".level-select").forEach(button => {
+  button.addEventListener("click", () => {
+    selectLevel(1);
+  });
+});
 
-/* === Buttons === */
-#startBtn, .level-select {
-  margin: 6px 6px 0 6px;
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  background-color: #4caf50;
-  color: white;
-  transition: background-color 0.25s;
-  user-select: none;
-}
+// Start button logic
+startBtn.addEventListener("click", () => {
+  document.getElementById("startScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  startGame(1);
+});
 
-#startBtn:disabled {
-  background-color: #a5d6a7;
-  cursor: default;
-}
-
-.level-select.selected {
-  background: #388e3c;
-  color: #fff;
-  font-weight: bold;
-}
-.level-select:not(.selected):hover,
-#startBtn:not(:disabled):hover {
-  background-color: #219150;
-}
-
-/* === Keyboard Layout === */
-#keyboard {
-  margin: 18px auto;
-  width: 100%;
-  max-width: 370px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  user-select: none;
-}
-
-.keyboard-row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 4px;
-}
-
-.key {
-  margin: 2px 3px;
-  padding: 8px 14px;
-  font-size: 1.1em;
-  border-radius: 5px;
-  border: 1.5px solid #bbb;
-  background: #f9f9f9;
-  color: #333;
-  transition: background 0.2s, border-color 0.2s;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.key.highlight {
-  background: #fff59d;
-  border: 2px solid #388e3c;
-  color: #388e3c;
-  font-weight: bold;
-  box-shadow: 0 0 8px 1px #ffe082;
-}
-
-/* === Confetti Canvas === */
-#confettiCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
-}
-
-/* === Responsive === */
-@media (max-width: 500px) {
-  #startScreen,
-  #gameScreen {
-    max-width: 98vw;
+// Keyboard input listener
+window.addEventListener("keydown", (e) => {
+  if (!currentChar) return;
+  const pressedKey = e.key.toLowerCase();
+  const targetKey = currentChar.toLowerCase();
+  if (pressedKey === targetKey) {
+    handleCorrectAnswer();
+  } else if (keys.includes(pressedKey)) {
+    combo = 0;
+    score = Math.max(0, score - 1);
+    updateStats();
+    flashWrongKey();
   }
-  #keyboard {
-    max-width: 98vw;
-  }
-  #confettiCanvas {
-    width: 98vw;
-    height: 98vh;
-  }
-  #letterDisplay {
-    font-size: 2em;
-    min-height: 42px;
+});
+
+// Functions
+
+function flashWrongKey() {
+  letterDisplay.classList.add("flash-wrong");
+  setTimeout(() => {
+    letterDisplay.classList.remove("flash-wrong");
+  }, 200);
+}
+
+function selectLevel(level) {
+  currentLevel = 1;
+  startBtn.disabled = false;
+  document.querySelectorAll(".level-select").forEach(btn => btn.classList.remove("selected"));
+  document.querySelectorAll(".level-select")[0].classList.add("selected");
+}
+
+function startGame(levelNumber) {
+  currentLevel = 1;
+  currentChar = '';
+  score = 0;
+  combo = 0;
+  answered = false;
+  updateStats();
+  nextChar();
+}
+
+function nextChar() {
+  removeHighlight();
+  currentChar = keys[Math.floor(Math.random() * keys.length)];
+  letterDisplay.textContent = currentChar.toUpperCase();
+  speak(currentChar);
+  highlightKey(currentChar);
+}
+
+function highlightKey(char) {
+  removeHighlight();
+  const id = keyMap[char.toLowerCase()];
+  const el = document.getElementById(id);
+  if (el) el.classList.add('highlight');
+}
+
+function removeHighlight() {
+  document.querySelectorAll('.key').forEach(el => el.classList.remove('highlight'));
+}
+
+function handleCorrectAnswer() {
+  combo++;
+  score++;
+  updateStats();
+  nextChar();
+}
+
+function updateStats() {
+  pointsEl.textContent = score;
+  comboEl.textContent = combo;
+  levelEl.textContent = currentLevel;
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    speechSynthesis.speak(utter);
   }
 }
+
+// Confetti functions
+function triggerConfetti() {
+  for (let i = 0; i < 100; i++) {
+    confettiParticles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * -20,
+      r: Math.random() * 6 + 2,
+      d: Math.random() * 12.5 + 1,
+      color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`,
+      tilt: Math.random() * 10 - 10,
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  confettiParticles.forEach((p) => {
+    ctx.beginPath();
+    ctx.fillStyle = p.color;
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  updateConfetti();
+}
+
+function updateConfetti() {
+  for (let i = 0; i < confettiParticles.length; i++) {
+    const p = confettiParticles[i];
+    p.y += p.d;
+    p.x += Math.sin(p.tilt) * 2;
+    if (p.y > confettiCanvas.height) {
+      confettiParticles.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+function resizeCanvas() {
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+setInterval(drawConfetti, 30);
