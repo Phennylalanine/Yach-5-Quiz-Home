@@ -1,81 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Typing Game with XP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Alphabet Typing Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Typing Game</h1>
-
-  <!-- Landing Screen -->
   <div id="startScreen">
-    <h2>Select Level</h2>
+    <h1>Alphabet Typing Game</h1>
     <div>
-      <button class="level-select" onclick="selectLevel(1)">Level 1</button>
-      <button class="level-select" onclick="selectLevel(2)">Level 2</button>
+      <button class="level-select selected">Level 1</button>
+      <!-- Level 2 button removed -->
     </div>
-    <button id="startBtn" disabled>Start Game</button>
+    <button id="startBtn" disabled>Start</button>
   </div>
 
-  <!-- Game Screen -->
   <div id="gameScreen" style="display:none;">
-    <div class="game-container">
-      <div id="letterDisplay"></div>
-
-      <!-- Stats UI -->
-      <div class="stats">
-        <p>Points: <span id="points">0</span> | Combo: <span id="combo">0</span> | Level: <span id="level">1</span></p>
-        <div class="xp-container">
-          <div class="xp-bar" id="xpBar"></div>
-          <div class="xp-text" id="xpText">0 / 0</div>
-        </div>
-      </div>
+    <div id="letterDisplay"></div>
+    <div>
+      <span>Points: <span id="points">0</span></span>
+      <span>Combo: <span id="combo">0</span></span>
+      <span>Level: <span id="level">1</span></span>
     </div>
-
-    <!-- Visual Keyboard -->
-    <div class="keyboard">
-      <div class="row">
-        <div class="key" id="key-q">q</div>
-        <div class="key" id="key-w">w</div>
-        <div class="key" id="key-e">e</div>
-        <div class="key" id="key-r">r</div>
-        <div class="key" id="key-t">t</div>
-        <div class="key" id="key-y">y</div>
-        <div class="key" id="key-u">u</div>
-        <div class="key" id="key-i">i</div>
-        <div class="key" id="key-o">o</div>
-        <div class="key" id="key-p">p</div>
-      </div>
-      <div class="row">
-        <div class="key spacer"></div>
-        <div class="key" id="key-a">a</div>
-        <div class="key" id="key-s">s</div>
-        <div class="key" id="key-d">d</div>
-        <div class="key" id="key-f">f</div>
-        <div class="key" id="key-g">g</div>
-        <div class="key" id="key-h">h</div>
-        <div class="key" id="key-j">j</div>
-        <div class="key" id="key-k">k</div>
-        <div class="key" id="key-l">l</div>
-      </div>
-      <div class="row">
-        <div class="key spacer"></div>
-        <div class="key spacer"></div>
-        <div class="key" id="key-z">z</div>
-        <div class="key" id="key-x">x</div>
-        <div class="key" id="key-c">c</div>
-        <div class="key" id="key-v">v</div>
-        <div class="key" id="key-b">b</div>
-        <div class="key" id="key-n">n</div>
-        <div class="key" id="key-m">m</div>
-      </div>
+    <div id="keyboard">
+      <!-- Render keys, for full alphabet: -->
+      <button class="key" id="key-a">A</button>
+      <button class="key" id="key-b">B</button>
+      <button class="key" id="key-c">C</button>
+      <button class="key" id="key-d">D</button>
+      <button class="key" id="key-e">E</button>
+      <button class="key" id="key-f">F</button>
+      <button class="key" id="key-g">G</button>
+      <button class="key" id="key-h">H</button>
+      <button class="key" id="key-i">I</button>
+      <button class="key" id="key-j">J</button>
+      <button class="key" id="key-k">K</button>
+      <button class="key" id="key-l">L</button>
+      <button class="key" id="key-m">M</button>
+      <button class="key" id="key-n">N</button>
+      <button class="key" id="key-o">O</button>
+      <button class="key" id="key-p">P</button>
+      <button class="key" id="key-q">Q</button>
+      <button class="key" id="key-r">R</button>
+      <button class="key" id="key-s">S</button>
+      <button class="key" id="key-t">T</button>
+      <button class="key" id="key-u">U</button>
+      <button class="key" id="key-v">V</button>
+      <button class="key" id="key-w">W</button>
+      <button class="key" id="key-x">X</button>
+      <button class="key" id="key-y">Y</button>
+      <button class="key" id="key-z">Z</button>
     </div>
+    <canvas id="confettiCanvas"></canvas>
   </div>
-
-  <!-- Confetti Canvas -->
-  <canvas id="confettiCanvas"></canvas>
 
   <script src="script.js"></script>
 </body>
