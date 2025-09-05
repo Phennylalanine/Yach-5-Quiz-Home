@@ -1,6 +1,6 @@
 // --- Game Variables ---
 let currentChar = '';
-let currentLevel = 1;
+let currentLevel = 1; // Only Level 1 remains
 let revealTimer = null;
 
 let currentQuestionIndex = 0;
@@ -24,24 +24,26 @@ const ctx = confettiCanvas.getContext("2d");
 
 let confettiParticles = [];
 
-let selectedLevel = null;
-
 const startBtn = document.getElementById("startBtn");
 
-// Attach event listeners to level select buttons
+// Remove Level Select Buttons except Level 1
 document.querySelectorAll(".level-select").forEach(button => {
-  button.addEventListener("click", () => {
-    selectLevel(parseInt(button.textContent.replace("Level ", "")));
-  });
+  if (button.textContent.trim() === "Level 1") {
+    button.addEventListener("click", () => {
+      selectLevel(1);
+    });
+    button.style.display = "inline-block";
+  } else {
+    button.style.display = "none";
+  }
 });
 
 // Start button listener
 startBtn.addEventListener("click", () => {
-  if (selectedLevel !== null) {
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("gameScreen").style.display = "block";
-    startGame(selectedLevel);
-  }
+  // Only Level 1 is possible
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
+  startGame(1);
 });
 
 // Keyboard input listener (score system and penalty, no XP/level)
@@ -57,29 +59,36 @@ window.addEventListener("keydown", (e) => {
     combo = 0;
     score = Math.max(0, score - 1); // Prevent negative score
     updateStats();
+    flashWrongKey();
   }
 });
 
 // Functions
 
+function flashWrongKey() {
+  letterDisplay.classList.add("flash-wrong");
+  setTimeout(() => {
+    letterDisplay.classList.remove("flash-wrong");
+  }, 200);
+}
+
 function selectLevel(level) {
-  selectedLevel = level;
+  // Only Level 1 available
+  currentLevel = 1;
+  startBtn.disabled = false;
 
   // Highlight selected button
   const buttons = document.querySelectorAll(".level-select");
   buttons.forEach(btn => btn.classList.remove("selected"));
 
-  const selectedButton = buttons[level - 1]; // Level 1 = index 0
+  const selectedButton = buttons[0]; // Only Level 1
   if (selectedButton) {
     selectedButton.classList.add("selected");
   }
-
-  // Enable the start button
-  startBtn.disabled = false;
 }
 
 function startGame(levelNumber) {
-  currentLevel = levelNumber;
+  currentLevel = 1; // Only Level 1
   currentChar = '';
   score = 0;
   combo = 0;
@@ -91,13 +100,9 @@ function startGame(levelNumber) {
 function nextChar() {
   removeHighlight();
   currentChar = keys[Math.floor(Math.random() * keys.length)];
-  letterDisplay.textContent = currentLevel === 1 ? currentChar : '';
+  letterDisplay.textContent = currentChar;
   speak(currentChar);
-  if (currentLevel === 1) {
-    highlightKey(currentChar);
-  } else {
-    revealTimer = setTimeout(() => highlightKey(currentChar), 5000);
-  }
+  highlightKey(currentChar);
 }
 
 function highlightKey(char) {
@@ -114,9 +119,6 @@ function removeHighlight() {
 function handleCorrectAnswer() {
   combo++;
   score++;
-
-  // Combo bonus logic (if you want to implement special effects or messaging at certain combos, do it here)
-
   updateStats();
   nextChar();
 }
@@ -124,7 +126,6 @@ function handleCorrectAnswer() {
 function updateStats() {
   pointsEl.textContent = score;
   comboEl.textContent = combo;
-  // If you want to show level somewhere, you can remove this line or keep it for currentLevel
   levelEl.textContent = currentLevel;
 }
 
