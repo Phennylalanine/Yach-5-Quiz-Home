@@ -1,188 +1,177 @@
-/* === Base Layout and Font === */
+/* === Visibility Classes === */
+.hidden { display: none; }
+.active { display: block; }
+
+/* === Page Layout === */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f4f4f4;
   color: #333;
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-/* === Buttons === */
-button {
-  font-size: 1em;
-  margin: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  background-color: #4caf50;
-  color: white;
-  transition: background-color 0.25s ease;
-  user-select: none;
+/* === Start and Game Screens === */
+#startScreen,
+#gameScreen {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 420px;
+  min-height: 0;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-button:hover {
-  background-color: #388e3c;
+#startScreen.active,
+#gameScreen.active {
+  display: flex;
 }
 
 /* === Letter Display === */
 #letterDisplay {
-  font-size: 2em;
-  margin: 20px 0;
+  font-size: 3em;
   font-weight: bold;
   color: #2c3e50;
-}
-
-/* === Stats Section === */
-.stats {
-  margin-top: 10px;
-  font-size: 1em;
-  color: #34495e;
-  user-select: none;
+  margin: 22px 0 18px 0;
+  min-height: 70px;
   text-align: center;
-}
-.stats div {
-  margin: 4px 0;
-}
-.stats strong {
-  color: #2c3e50;
-}
-
-/* === XP Bar === */
-.xp-container {
-  width: 300px;
-  height: 20px;
-  background: #ddd;
-  border-radius: 10px;
-  margin: 10px auto;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.10);
-}
-.xp-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #4caf50, #81c784);
-  width: 0;
-  transition: width 0.4s ease-in-out;
-  border-radius: 10px 0 0 10px;
-  box-shadow: inset 0 -2px 6px rgba(0,0,0,0.2);
-}
-.xp-text {
-  position: absolute;
+  letter-spacing: 2px;
   width: 100%;
-  top: 0;
-  left: 0;
-  font-size: 0.9em;
-  line-height: 20px;
-  color: #2e7d32;
-  font-weight: 600;
-  text-align: center;
+  transition: background 0.2s;
 }
 
-/* === Keyboard Layout === */
-.keyboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin: 30px auto;
-  background: #333;
-  padding: 20px;
-  border-radius: 12px;
-  width: fit-content;
-  max-width: 100%;
-}
-.row {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 6px;
-  justify-content: center;
-}
-.key {
-  background-color: #555;
-  color: white;
-  border-radius: 6px;
-  padding: 12px 0;
-  text-align: center;
-  font-size: 1.1em;
-  user-select: none;
-  min-width: 32px;
-}
-.key.highlight {
-  background-color: yellow;
-  color: black;
-  font-weight: bold;
-}
-.key.spacer {
-  visibility: hidden;
-}
-
-/* === Floating XP Animation === */
-.floating-xp {
-  position: absolute;
-  color: gold;
-  font-weight: bold;
-  font-size: 1.2em;
-  animation: floatUp 1.5s ease-out forwards;
-}
-@keyframes floatUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
-}
-
-/* === Confetti Canvas === */
-canvas#confettiCanvas {
-  position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  z-index: 999;
-}
-
-/* === Responsive Layout === */
-@media (max-width: 500px) {
-  .xp-container {
-    width: 90vw;
-    max-width: 300px;
-  }
-  .keyboard {
-    width: 95vw;
-    padding: 10px;
-  }
-}
-
-/* === Game Content Centering === */
-.game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-button.level-select.selected {
-  background-color: #2196f3; /* Blue */
-  color: white;
-}
+/* === Red Flash Wrong Key Effect === */
 .flash-wrong {
   animation: flashWrong 200ms;
 }
-
 @keyframes flashWrong {
   0% { background-color: #ff4c4c; }
   100% { background-color: transparent; }
 }
 
+/* === Stats Panel === */
+.stats-panel {
+  width: 100%;
+  margin-bottom: 16px;
+  font-size: 1em;
+  color: #34495e;
+  display: flex;
+  justify-content: space-around;
+  user-select: none;
+}
+.stats-panel span {
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* === Buttons === */
+#startBtn, .level-select {
+  margin: 6px 6px 0 6px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
+  transition: background-color 0.25s;
+  user-select: none;
+}
+
+#startBtn:disabled {
+  background-color: #a5d6a7;
+  cursor: default;
+}
+
+.level-select.selected {
+  background: #388e3c;
+  color: #fff;
+  font-weight: bold;
+}
+.level-select:not(.selected):hover,
+#startBtn:not(:disabled):hover {
+  background-color: #219150;
+}
+
+/* === Keyboard Layout === */
+#keyboard {
+  margin: 18px auto;
+  width: 100%;
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.key {
+  margin: 2px 3px;
+  padding: 8px 14px;
+  font-size: 1.1em;
+  border-radius: 5px;
+  border: 1.5px solid #bbb;
+  background: #f9f9f9;
+  color: #333;
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.key.highlight {
+  background: #fff59d;
+  border: 2px solid #388e3c;
+  color: #388e3c;
+  font-weight: bold;
+  box-shadow: 0 0 8px 1px #ffe082;
+}
+
+/* === Confetti Canvas === */
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* === Responsive === */
+@media (max-width: 500px) {
+  #startScreen,
+  #gameScreen {
+    max-width: 98vw;
+  }
+  #keyboard {
+    max-width: 98vw;
+  }
+  #confettiCanvas {
+    width: 98vw;
+    height: 98vh;
+  }
+  #letterDisplay {
+    font-size: 2em;
+    min-height: 42px;
+  }
+}
