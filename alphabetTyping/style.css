@@ -1,6 +1,6 @@
 /* === Visibility Classes === */
 .hidden { display: none; }
-.active { display: block; }
+.active { display: flex; }
 
 /* === Page Layout === */
 html, body {
