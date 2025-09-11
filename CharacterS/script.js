@@ -223,8 +223,8 @@ function updateStats() {
 }
 
 function saveProgress() {
-  localStorage.setItem("FamilySxp", xp);
-  localStorage.setItem("FamilySlevel", level);
+  localStorage.setItem("CharacterSxp", xp);
+  localStorage.setItem("CharacterSlevel", level);
 }
 
 function loadProgress() {
@@ -304,4 +304,5 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 setInterval(drawConfetti, 30);
+
 
