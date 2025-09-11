@@ -6,9 +6,11 @@ window.addEventListener("DOMContentLoaded", () => {
     { key: "monthsSlevel", multiplier: 0.3 },
     { key: "EventSlevel", multiplier: 0.3 },
     { key: "FamilySlevel", multiplier: 0.3 },
+    { key: "CharacterSlevel", multiplier: 0.3 },
     { key: "monthsMlevel", multiplier: 0.5 },
     { key: "eventsMlevel", multiplier: 0.5 },
     { key: "FamilyMlevel", multiplier: 0.5 },
+    { key: "CharacterMlevel", multiplier: 0.5 },
       ];
 
   // Calculate weighted overall level
