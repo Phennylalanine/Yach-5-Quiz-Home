@@ -224,7 +224,7 @@ function updateStats() {
 
 function saveProgress() {
   localStorage.setItem("canMxp", xp);
-  localStorage.setItem("canMlevel", level);
+  localStorage.setItem("canMevel", level);
 }
 
 function loadProgress() {
