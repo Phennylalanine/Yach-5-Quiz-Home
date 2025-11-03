@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("overallLevel");
-  const IMG_BASE = "./Yach-5-Quiz-Home/monster_image/";
+  const IMG_BASE = "./monster_image/";
 
   // 1) Calculate weighted overall level (same as before)
   const quizData = [
