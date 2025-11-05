@@ -223,13 +223,13 @@ function updateStats() {
 }
 
 function saveProgress() {
-  localStorage.setItem("eventMxp", xp);
-  localStorage.setItem("eventMlevel", level);
+  localStorage.setItem("eventMxpr", xp);
+  localStorage.setItem("eventMlevelr", level);
 }
 
 function loadProgress() {
-  const savedXP = localStorage.getItem("eventMxp");
-  const savedLevel = localStorage.getItem("eventMlevel");
+  const savedXP = localStorage.getItem("eventMxpr");
+  const savedLevel = localStorage.getItem("eventMlevelr");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
