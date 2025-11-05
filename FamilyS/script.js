@@ -223,13 +223,13 @@ function updateStats() {
 }
 
 function saveProgress() {
-  localStorage.setItem("familySxp", xp);
-  localStorage.setItem("familySlevel", level);
+  localStorage.setItem("familySxpr", xp);
+  localStorage.setItem("familySlevelr", level);
 }
 
 function loadProgress() {
-  const savedXP = localStorage.getItem("familySxp");
-  const savedLevel = localStorage.getItem("familySlevel");
+  const savedXP = localStorage.getItem("familySxpr");
+  const savedLevel = localStorage.getItem("familySlevelr");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
@@ -304,5 +304,6 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 setInterval(drawConfetti, 30);
+
 
 
