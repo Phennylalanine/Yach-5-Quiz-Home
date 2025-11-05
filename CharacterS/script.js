@@ -223,13 +223,13 @@ function updateStats() {
 }
 
 function saveProgress() {
-  localStorage.setItem("characterSxp", xp);
-  localStorage.setItem("characterSlevel", level);
+  localStorage.setItem("characterSxpr", xp);
+  localStorage.setItem("characterSlevelr", level);
 }
 
 function loadProgress() {
-  const savedXP = localStorage.getItem("characterSxp");
-  const savedLevel = localStorage.getItem("characterSlevel");
+  const savedXP = localStorage.getItem("characterSxpr");
+  const savedLevel = localStorage.getItem("characterSlevelr");
 
   if (savedXP !== null) xp = parseInt(savedXP, 10);
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
@@ -304,6 +304,7 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 setInterval(drawConfetti, 30);
+
 
 
 
