@@ -4,119 +4,118 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quiz Hub - Overall Level</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #f0f0f0;
-      text-align: center;
-    }
-    h1 {
-      margin-bottom: 10px;
-    }
-    #overallLevel {
-      font-size: 1.5em;
-      margin: 20px 0;
-      color: #333;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 30px 0 0 0;
-    }
-    li {
-      margin: 10px 0;
-      font-size: 1.2em;
-    }
-    a {
-      text-decoration: none;
-      color: #0066cc;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .levelValue {
-      font-weight: bold;
-      color: #0066cc;
-      margin-left: 8px;
-      font-size: 1em;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Welcome to the Quiz Hub!</h1>
   <p id="overallLevel"></p>
 
-  <ul>
-    <li>
- <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/alphabetTyping" target="_blank" rel="noopener noreferrer">
-        Alphabet Keyboard Practice - キーボードの練習
- 
+  <div class="quiz-grid">
+    <!-- Alphabet Keyboard Practice Card -->
+    <div class="quiz-card">
+      <div class="quiz-icon">⌨️</div>
+      <h3>Alphabet Keyboard Practice</h3>
+      <p>キーボードの練習</p>
+      <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/alphabetTyping" target="_blank" rel="noopener noreferrer">
+        Start
       </a>
-</li>
-      
+    </div>
+    <!-- Months Quiz Cards -->
+    <div class="quiz-card">
+      <div class="quiz-icon">📅</div>
+      <h3>Round 1 Months Quiz</h3>
+      <p>月クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsS" target="_blank" rel="noopener noreferrer">
-        Round 1 Months Quiz - 月クイズ
+        Start
       </a>
       <span class="levelValue" data-key="monthsSlevel">(Level: 0)</span>
-    </li>
-    <li>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-icon">📅</div>
+      <h3>Round 2 Months Quiz</h3>
+      <p>月クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/MonthsM" target="_blank" rel="noopener noreferrer">
-        Round 2 Months Quiz - 月クイズ
+        Start
       </a>
       <span class="levelValue" data-key="monthsMlevel">(Level: 0)</span>
-    </li>
-    <li>
+    </div>
+    <!-- Activities Quiz Cards -->
+    <div class="quiz-card">
+      <div class="quiz-icon">🏃</div>
+      <h3>Round 1 Activities Quiz</h3>
+      <p>アクティビティクイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventS" target="_blank" rel="noopener noreferrer">
-        Round 1 Activities Quiz - アクティビティクイズ
+        Start
       </a>
       <span class="levelValue" data-key="EventSlevel">(Level: 0)</span>
-    </li>
-    <li>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-icon">🏃</div>
+      <h3>Round 2 Activities Quiz</h3>
+      <p>アクティビティクイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/EventM" target="_blank" rel="noopener noreferrer">
-        Round 2 Activities Quiz - アクティビティクイズ
+        Start
       </a>
       <span class="levelValue" data-key="EventMlevel">(Level: 0)</span>
-    </li>
-    <li>
+    </div>
+    <!-- Family Quiz Cards -->
+    <div class="quiz-card">
+      <div class="quiz-icon">👨‍👩‍👧‍👦</div>
+      <h3>Round 1 Family Quiz</h3>
+      <p>家族クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/FamilyS" target="_blank" rel="noopener noreferrer">
-        Round 1 Family Quiz - 家族クイズ
+        Start
       </a>
       <span class="levelValue" data-key="FamilySlevel">(Level: 0)</span>
-    </li>
-     <li>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-icon">👨‍👩‍👧‍👦</div>
+      <h3>Round 2 Family Quiz</h3>
+      <p>家族クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/FamilyM" target="_blank" rel="noopener noreferrer">
-        Round 2 Family Quiz - 家族クイズ
+        Start
       </a>
       <span class="levelValue" data-key="FamilyMlevel">(Level: 0)</span>
-    </li>
-      <li>
+    </div>
+    <!-- Character Quiz Cards -->
+    <div class="quiz-card">
+      <div class="quiz-icon">🎭</div>
+      <h3>Round 1 Character Quiz</h3>
+      <p>性格クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/CharacterS" target="_blank" rel="noopener noreferrer">
-        Round 1 Character Quiz - 性格クイズ
+        Start
       </a>
-      <span class="levelValue" data-key="FamilySlevel">(Level: 0)</span>
-    </li>
-     <li>
+      <span class="levelValue" data-key="CharacterSlevel">(Level: 0)</span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-icon">🎭</div>
+      <h3>Round 2 Character Quiz</h3>
+      <p>性格クイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/CharacterM" target="_blank" rel="noopener noreferrer">
-        Round 2 character Quiz - 性格クイズ
+        Start
       </a>
-      <span class="levelValue" data-key="FamilyMlevel">(Level: 0)</span>
-    </li>
-      <li>
+      <span class="levelValue" data-key="CharacterMlevel">(Level: 0)</span>
+    </div>
+    <!-- Can/Can't Quiz Cards -->
+    <div class="quiz-card">
+      <div class="quiz-icon">✅❌</div>
+      <h3>Round 1 Can Quiz</h3>
+      <p>できるクイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/can&can'tS" target="_blank" rel="noopener noreferrer">
-        Round 1 Can Quiz - できるクイズ
+        Start
       </a>
       <span class="levelValue" data-key="canSlevel">(Level: 0)</span>
-    </li>
-     <li>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-icon">✅❌</div>
+      <h3>Round 2 Can Quiz</h3>
+      <p>できるクイズ</p>
       <a href="https://phennylalanine.github.io/Yach-5-Quiz-Home/can&cantM" target="_blank" rel="noopener noreferrer">
-        Round 2 Can Quiz - できるクイズ
+        Start
       </a>
       <span class="levelValue" data-key="canMlevel">(Level: 0)</span>
-    </li>
-  </ul>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
