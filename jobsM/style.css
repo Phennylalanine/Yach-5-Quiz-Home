@@ -1,10 +1,10 @@
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-      text-align: center;
-      color: #333;
-    }
+  font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+  color: #333;
+}
 
     #startScreen {
       display: none;
