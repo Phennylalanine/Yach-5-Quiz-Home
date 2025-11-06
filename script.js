@@ -1,8 +1,25 @@
 window.addEventListener("DOMContentLoaded", () => {
+  // 1) IMAGE NAME MAPPING – Enter/modify below
+  const IMAGE_DISPLAY_NAMES = {
+    shadowPlantEgg: "ヤミタマ",
+    plantSlime_1: "ハナゴロ",
+    shadowSlime_1: "カゲモチ",
+    plantEvo_2A: "ネッコン",
+    plantEvo_2B: "モリフワ",
+    shadowEvo_2A: "スミボウ",
+    shadowEvo_2B: "ヨルビト",
+  };
+
+  // 2) Helper for mapped display name
+  function getDisplayName(imgFile) {
+    const key = imgFile.replace(".png", "");
+    return IMAGE_DISPLAY_NAMES[key] || "名称未設定";
+  }
+
   const container = document.getElementById("overallLevel");
   const IMG_BASE = "./monster_image/";
 
-  // 1) Calculate weighted overall level (same as before)
+  // 3) Calculate weighted overall level (same as before)
   const quizData = [
     { key: "monthsSlevelr", multiplier: 0.3 },
     { key: "EventSlevelr", multiplier: 0.3 },
@@ -23,10 +40,9 @@ window.addEventListener("DOMContentLoaded", () => {
     return sum + value * multiplier;
   }, 0);
 
-  // We’ll use the floored value for threshold checks.
   const overallLevel = Math.floor(overallLevelRaw);
 
-  // 2) Helpers
+  // 4) Branch and Evo helpers
   const getBranch = () => localStorage.getItem("branchChoice"); // "plant" | "shadow" | null
   const setBranch = (b) => localStorage.setItem("branchChoice", b);
   const getEvo2 = () => localStorage.getItem("evo2Choice"); // "A" | "B" | null
@@ -71,32 +87,36 @@ window.addEventListener("DOMContentLoaded", () => {
   function render() {
     clearContainer();
 
-    // Safety: If level is below 5, we ignore any stored choice (we still keep it in storage).
+    // Level < 5: show egg
     if (overallLevel < 5) {
-      container.appendChild(img(`${IMG_BASE}shadowPlantEgg.png`, "Egg"));
+      const imgFile = "shadowPlantEgg.png";
+      container.appendChild(img(`${IMG_BASE}${imgFile}`, "Egg"));
+      container.appendChild(label(getDisplayName(imgFile)));
       container.appendChild(label(`レベル：${overallLevel}`));
       return;
     }
 
-    // Level ≥ 5: need/select branch
+    // Need/select branch
     const branch = getBranch();
     if (!branch) {
-      // Present one-time branch choice (Japanese)
       container.appendChild(label("進化の分岐を選んでください："));
-      // Show both thumbnails to make the choice clearer
+
       const thumbs = document.createElement("div");
       thumbs.style.display = "flex";
       thumbs.style.justifyContent = "center";
       thumbs.style.gap = "24px";
       thumbs.style.marginBottom = "8px";
 
+      const plantFile = "plantSlime_1.png";
+      const shadowFile = "shadowSlime_1.png";
+
       const plantWrap = document.createElement("div");
-      plantWrap.appendChild(img(`${IMG_BASE}plantSlime_1.png`, "植物スライム"));
-      plantWrap.appendChild(label("植物（プラント）へ進化"));
+      plantWrap.appendChild(img(`${IMG_BASE}${plantFile}`, "植物スライム"));
+      plantWrap.appendChild(label(getDisplayName(plantFile)));
 
       const shadowWrap = document.createElement("div");
-      shadowWrap.appendChild(img(`${IMG_BASE}shadowSlime_1.png`, "シャドウスライム"));
-      shadowWrap.appendChild(label("シャドウへ進化"));
+      shadowWrap.appendChild(img(`${IMG_BASE}${shadowFile}`, "シャドウスライム"));
+      shadowWrap.appendChild(label(getDisplayName(shadowFile)));
 
       thumbs.appendChild(plantWrap);
       thumbs.appendChild(shadowWrap);
@@ -116,23 +136,19 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // We have a branch chosen. Before Level 10, just show the branch slime.
+    // Branch chosen, level < 10: show branch slime
     if (overallLevel < 10) {
-      const slimeImg =
-        branch === "plant"
-          ? `${IMG_BASE}plantSlime_1.png`
-          : `${IMG_BASE}shadowSlime_1.png`;
-      container.appendChild(img(slimeImg, `${branch} slime`));
+      const slimeFile = branch === "plant" ? "plantSlime_1.png" : "shadowSlime_1.png";
+      container.appendChild(img(`${IMG_BASE}${slimeFile}`, `${branch} slime`));
+      container.appendChild(label(getDisplayName(slimeFile)));
       container.appendChild(label(`分岐：${branch === "plant" ? "植物（プラント）" : "シャドウ"}　｜　レベル：${overallLevel}`));
       return;
     }
 
-    // Level ≥ 10 → evo choice A/B within the selected branch
+    // Level >= 10 → evo choice A/B
     const evo2 = getEvo2();
     if (!evo2) {
-      container.appendChild(
-        label("第2進化を選んでください（1回のみ）：")
-      );
+      container.appendChild(label("第2進化を選んでください（1回のみ）："));
 
       const pickWrap = document.createElement("div");
       pickWrap.style.display = "flex";
@@ -141,18 +157,12 @@ window.addEventListener("DOMContentLoaded", () => {
       pickWrap.style.flexWrap = "wrap";
       pickWrap.style.marginBottom = "8px";
 
-      const aFile =
-        branch === "plant"
-          ? "plantEvo_2A.png"
-          : "shadowEvo_2A.png";
-      const bFile =
-        branch === "plant"
-          ? "plantEvo_2B.png"
-          : "shadowEvo_2B.png";
+      const aFile = branch === "plant" ? "plantEvo_2A.png" : "shadowEvo_2A.png";
+      const bFile = branch === "plant" ? "plantEvo_2B.png" : "shadowEvo_2B.png";
 
       const aWrap = document.createElement("div");
       aWrap.appendChild(img(`${IMG_BASE}${aFile}`, "進化A"));
-      aWrap.appendChild(label("進化A を選ぶ"));
+      aWrap.appendChild(label(getDisplayName(aFile)));
       const aBtn = btn("進化A を決定", () => {
         setEvo2("A");
         render();
@@ -161,7 +171,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const bWrap = document.createElement("div");
       bWrap.appendChild(img(`${IMG_BASE}${bFile}`, "進化B"));
-      bWrap.appendChild(label("進化B を選ぶ"));
+      bWrap.appendChild(label(getDisplayName(bFile)));
       const bBtn = btn("進化B を決定", () => {
         setEvo2("B");
         render();
@@ -177,13 +187,14 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // evo2 chosen → show the selected evolution image and lock it in
+    // evo2 chosen → show selected evolution image and its mapped name
     const finalFile =
       branch === "plant"
         ? (evo2 === "A" ? "plantEvo_2A.png" : "plantEvo_2B.png")
         : (evo2 === "A" ? "shadowEvo_2A.png" : "shadowEvo_2B.png");
 
     container.appendChild(img(`${IMG_BASE}${finalFile}`, "進化結果"));
+    container.appendChild(label(getDisplayName(finalFile)));
     container.appendChild(
       label(
         `分岐：${branch === "plant" ? "植物（プラント）" : "シャドウ"}　｜　進化：${evo2}　｜　レベル：${overallLevel}`
@@ -193,7 +204,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   render();
 
-  // 3) Keep your level-by-span updater
+  // Level-by-span updater (unchanged)
   document.querySelectorAll(".levelValue").forEach((span) => {
     const key = span.getAttribute("data-key");
     const levelValue = parseInt(localStorage.getItem(key)) || 0;
