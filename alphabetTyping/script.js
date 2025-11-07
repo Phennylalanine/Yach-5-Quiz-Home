@@ -8,6 +8,8 @@ let score = 0;
 let combo = 0;
 let answered = false;
 
+const maxLevel = 5; // NEW: set max level
+
 const maxComboForBonus = 5;
 
 const keys = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -25,6 +27,17 @@ const ctx = confettiCanvas.getContext("2d");
 let confettiParticles = [];
 
 const startBtn = document.getElementById("startBtn");
+
+// NEW: Message element for congratulations
+let congratsMessage = document.createElement("div");
+congratsMessage.id = "congratsMessage";
+congratsMessage.style.fontSize = "2rem";
+congratsMessage.style.color = "#FF4081";
+congratsMessage.style.textAlign = "center";
+congratsMessage.style.marginTop = "50px";
+congratsMessage.style.display = "none";
+congratsMessage.textContent = "おめでとうございます！やりました！ぜひ他のクイズにも挑戦してください。";
+document.getElementById("gameScreen").appendChild(congratsMessage);
 
 // Remove Level Select Buttons except Level 1
 document.querySelectorAll(".level-select").forEach(button => {
@@ -46,8 +59,12 @@ startBtn.addEventListener("click", () => {
   startGame(1);
 });
 
+// NEW: Add a flag to indicate game completion
+let gameCompleted = false;
+
 // Keyboard input listener (score system and penalty, no XP/level)
 window.addEventListener("keydown", (e) => {
+  if (gameCompleted) return; // NEW: Disable input after finishing
   if (!currentChar) return;
   const pressedKey = e.key.toLowerCase();
   const targetKey = currentChar.toLowerCase();
@@ -93,11 +110,19 @@ function startGame(levelNumber) {
   score = 0;
   combo = 0;
   answered = false;
+  gameCompleted = false; // NEW: Reset game completion flag
+  congratsMessage.style.display = "none"; // NEW: Hide message on reset
+  letterDisplay.style.display = "block"; // NEW: Ensure letter display is visible
   updateStats();
   nextChar();
 }
 
 function nextChar() {
+  // NEW: If finished, do not start next character
+  if (currentLevel >= maxLevel) {
+    endGame();
+    return;
+  }
   removeHighlight();
   currentChar = keys[Math.floor(Math.random() * keys.length)];
   letterDisplay.textContent = currentChar;
@@ -116,9 +141,27 @@ function removeHighlight() {
   document.querySelectorAll('.key').forEach(el => el.classList.remove('highlight'));
 }
 
+// NEW: Add function to end game at level 5
+function endGame() {
+  gameCompleted = true;
+  currentChar = '';
+  letterDisplay.style.display = "none";
+  congratsMessage.style.display = "block";
+  triggerConfetti();
+}
+
 function handleCorrectAnswer() {
   combo++;
   score++;
+  // NEW: Level up every 10 points (example, change as needed)
+  if (score % 10 === 0 && currentLevel < maxLevel) {
+    currentLevel++;
+    updateStats();
+    if (currentLevel >= maxLevel) {
+      endGame();
+      return;
+    }
+  }
   updateStats();
   nextChar();
 }
@@ -181,4 +224,4 @@ function resizeCanvas() {
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
-setInterval(drawConfetti, 30);
+setInterval(drawConfetti, 30); 
