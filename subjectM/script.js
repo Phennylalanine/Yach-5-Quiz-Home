@@ -52,8 +52,11 @@ tryAgainBtn.addEventListener("click", tryAgain);
 
 // Load progress
 loadProgress();
+checkLock();
 
 function startQuiz() {
+  if (checkLock()) return;
+
   document.getElementById("startScreen").classList.remove("active");
   document.getElementById("quizScreen").classList.add("active");
 
@@ -195,6 +198,19 @@ function gainXP(amount) {
     feedback.innerHTML += `<br>🎉 Level Up! You are now level ${level}`;
   }
 
+  // Milestone check: every level that's a multiple of 5 (5, 10, 15, 20...)
+  if (level % 5 === 0 && level > levelBefore) {
+    const lockUntil = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
+    localStorage.setItem("subjectsMlockUntil", lockUntil);
+
+    feedback.innerHTML += `<br>🏆 <strong>Congratulations, you've reached Level ${level}!</strong><br>Take a break — come back in 24 hours to continue.`;
+
+    setTimeout(() => {
+      alert(`🎉 Congratulations! You've reached Level ${level}!\nCome back in 24 hours to continue your progress.`);
+      lockQuiz();
+    }, 300);
+  }
+
   if (level > levelBefore) {
     triggerConfetti();
   }
@@ -235,6 +251,33 @@ function loadProgress() {
   if (savedLevel !== null) level = parseInt(savedLevel, 10);
 
   updateStats();
+}
+
+function lockQuiz() {
+  answerInput.disabled = true;
+  nextBtn.disabled = true;
+  tryAgainBtn.style.display = "none";
+  document.getElementById("startBtn").disabled = true;
+
+  const lockUntil = localStorage.getItem("subjectMlockUntil");
+  if (lockUntil) {
+    const remaining = lockUntil - Date.now();
+    if (remaining > 0) {
+      feedback.innerHTML = `⏳ Locked for ${Math.ceil(remaining / 3600000)} more hour(s). Come back later!`;
+    }
+  }
+}
+
+function checkLock() {
+  const lockUntil = localStorage.getItem("subjectMlockUntil");
+  if (lockUntil && Date.now() < parseInt(lockUntil, 10)) {
+    lockQuiz();
+    return true;
+  } else if (lockUntil) {
+    localStorage.removeItem("subjectMlockUntil"); // lock expired, clear it
+    document.getElementById("startBtn").disabled = false;
+  }
+  return false;
 }
 
 function shuffleArray(array) {
