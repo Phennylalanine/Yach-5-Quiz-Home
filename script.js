@@ -21,20 +21,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 3) Calculate weighted overall level (same as before)
   const quizData = [
-    { key: "monthsSlevelr", multiplier: 0.3 },
-     { key: "subjectSlevelr", multiplier: 0.3 },
-    { key: "EventSlevelr", multiplier: 0.3 },
-    { key: "FamilySlevelr", multiplier: 0.3 },
-    { key: "CharacterSlevelr", multiplier: 0.3 },
-    { key: "oppositeSlevelr", multiplier: 0.3 },
-    { key: "jobsSlevelr", multiplier: 0.3 },
-    { key: "monthsMlevelr", multiplier: 0.5 },
-    { key: "subjectMlevelr", multiplier: 0.5 },
-    { key: "eventsMlevelr", multiplier: 0.5 },
-    { key: "FamilyMlevelr", multiplier: 0.5 },
-    { key: "CharacterMlevelr", multiplier: 0.5 },
-    { key: "oppositeMlevelr", multiplier: 0.5 },
-    { key: "jobsMlevelr", multiplier: 0.5 },
+    { key: "monthsSlevelr", multiplier: 0.5 },
+     { key: "subjectSlevelr", multiplier: 0.5 },
+    { key: "EventSlevelr", multiplier: 0.5 },
+    { key: "FamilySlevelr", multiplier: 0.5 },
+    { key: "CharacterSlevelr", multiplier: 0.5 },
+    { key: "oppositeSlevelr", multiplier: 0.5 },
+    { key: "jobsSlevelr", multiplier: 0.5 },
+    { key: "monthsMlevelr", multiplier: 0.75 },
+    { key: "subjectMlevelr", multiplier: 0.75 },
+    { key: "eventsMlevelr", multiplier: 0.75 },
+    { key: "FamilyMlevelr", multiplier: 0.75 },
+    { key: "CharacterMlevelr", multiplier: 0.75 },
+    { key: "oppositeMlevelr", multiplier: 0.75 },
+    { key: "jobsMlevelr", multiplier: 0.75 },
   ];
 
   const overallLevelRaw = quizData.reduce((sum, { key, multiplier }) => {
