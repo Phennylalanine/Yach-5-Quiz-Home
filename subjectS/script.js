@@ -194,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
     answerInput.focus();
 
     tryAgainBtn.style.display = "none";
-    nextBtn.disabled = true;
+    nextBtn.disabled = true;b
     answered = false;
   }
 
@@ -244,7 +244,6 @@ window.addEventListener("DOMContentLoaded", () => {
   function saveProgress() {
     localStorage.setItem("subjectsSxpr", xp);
     localStorage.setItem("subjectSlevelr", level);
-    window.checkEvolutionNotification();
   }
 
   function loadProgress() {
