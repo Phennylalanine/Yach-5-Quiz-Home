@@ -21,20 +21,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 3) Calculate weighted overall level (same as before)
   const quizData = [
-    { key: "monthsSlevelr", multiplier: 0.5 },
-     { key: "subjectSlevelr", multiplier: 0.5 },
-    { key: "EventSlevelr", multiplier: 0.5 },
-    { key: "FamilySlevelr", multiplier: 0.5 },
-    { key: "CharacterSlevelr", multiplier: 0.5 },
-    { key: "oppositeSlevelr", multiplier: 0.5 },
-    { key: "jobsSlevelr", multiplier: 0.5 },
-    { key: "monthsMlevelr", multiplier: 0.75 },
-    { key: "subjectMlevelr", multiplier: 0.75 },
-    { key: "eventsMlevelr", multiplier: 0.75 },
-    { key: "FamilyMlevelr", multiplier: 0.75 },
-    { key: "CharacterMlevelr", multiplier: 0.75 },
-    { key: "oppositeMlevelr", multiplier: 0.75 },
-    { key: "jobsMlevelr", multiplier: 0.75 },
+    { key: "monthsSlevelr", multiplier: 1 },
+    { key: "subjectSlevelr", multiplier: 1 },
+    { key: "eventSlevelr", multiplier: 1 },
+    { key: "familySlevelr", multiplier: 1 },
+    { key: "characterSlevelr", multiplier: 1 },
+    { key: "canSlevelr", multiplier: 1 },
+    { key: "jobsSlevelr", multiplier: 1 },
+    { key: "monthsMlevelr", multiplier: 1.75 },
+    { key: "subjectsMlevelr", multiplier: 1.75 },
+    { key: "eventMlevelr", multiplier: 1.75 },
+    { key: "familyMlevelr", multiplier: 1.75 },
+    { key: "characterMlevelr", multiplier: 1.75 },
+    { key: "canMlevelr", multiplier: 1.75 },
+    { key: "jobsMlevelr", multiplier: 1.75 },
   ];
 
   const overallLevelRaw = quizData.reduce((sum, { key, multiplier }) => {
@@ -50,6 +50,46 @@ window.addEventListener("DOMContentLoaded", () => {
   const getEvo2 = () => localStorage.getItem("evo2Choice"); // "A" | "B" | null
   const setEvo2 = (c) => localStorage.setItem("evo2Choice", c);
 
+  // 5) Inject responsive styles once (keeps the monster + card centered and
+  //    scaled to fit any screen size, instead of a fixed 400px width that
+  //    overflows on mobile)
+  if (!document.getElementById("overallLevelResponsiveStyle")) {
+    const style = document.createElement("style");
+    style.id = "overallLevelResponsiveStyle";
+    style.textContent = `
+      #overallLevel {
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+      }
+      #overallLevel img {
+        width: 100%;
+        max-width: min(90vw, 400px);
+        height: auto;
+        display: block;
+        margin: 0 auto 12px;
+      }
+      #overallLevel .evoChoicesWrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(12px, 4vw, 24px);
+        margin-bottom: 8px;
+      }
+      #overallLevel .evoChoicesWrap > div {
+        flex: 1 1 160px;
+        max-width: 220px;
+      }
+      #overallLevel button {
+        font-size: clamp(14px, 2.5vw, 16px);
+      }
+      #overallLevel .levelLabel {
+        font-size: clamp(14px, 3vw, 18px);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function clearContainer() {
     container.innerHTML = "";
     container.style.textAlign = "center";
@@ -59,11 +99,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const i = document.createElement("img");
     i.src = src;
     i.alt = alt;
-    i.style.maxWidth = "400px";
-    i.style.height = "auto";
-    i.style.imageRendering = "auto";
-    i.style.display = "block";
-    i.style.margin = "0 auto 12px";
+    // Sizing now handled by the injected responsive CSS above (width: 100%,
+    // max-width: min(90vw, 400px)) so it scales down gracefully on mobile.
     return i;
   }
 
@@ -81,6 +118,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function label(text) {
     const p = document.createElement("div");
     p.textContent = text;
+    p.className = "levelLabel";
     p.style.margin = "8px 0";
     p.style.fontWeight = "600";
     return p;
@@ -104,10 +142,7 @@ window.addEventListener("DOMContentLoaded", () => {
       container.appendChild(label("進化の分岐を選んでください："));
 
       const thumbs = document.createElement("div");
-      thumbs.style.display = "flex";
-      thumbs.style.justifyContent = "center";
-      thumbs.style.gap = "24px";
-      thumbs.style.marginBottom = "8px";
+      thumbs.className = "evoChoicesWrap";
 
       const plantFile = "plantSlime_1.png";
       const shadowFile = "shadowSlime_1.png";
@@ -153,11 +188,7 @@ window.addEventListener("DOMContentLoaded", () => {
       container.appendChild(label("第2進化を選んでください（1回のみ）："));
 
       const pickWrap = document.createElement("div");
-      pickWrap.style.display = "flex";
-      pickWrap.style.justifyContent = "center";
-      pickWrap.style.gap = "24px";
-      pickWrap.style.flexWrap = "wrap";
-      pickWrap.style.marginBottom = "8px";
+      pickWrap.className = "evoChoicesWrap";
 
       const aFile = branch === "plant" ? "plantEvo_2A.png" : "shadowEvo_2A.png";
       const bFile = branch === "plant" ? "plantEvo_2B.png" : "shadowEvo_2B.png";

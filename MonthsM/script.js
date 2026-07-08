@@ -231,6 +231,7 @@ function updateStats() {
 function saveProgress() {
   localStorage.setItem("monthsMxpr", xp);
   localStorage.setItem("monthsMlevelr", level);
+  window.checkEvolutionNotification();
 }
 
 function loadProgress() {

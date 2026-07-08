@@ -244,6 +244,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function saveProgress() {
     localStorage.setItem("monthsSxpr", xp);
     localStorage.setItem("monthsSlevelr", level);
+  window.checkEvolutionNotification();
   }
 
   function loadProgress() {

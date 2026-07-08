@@ -241,6 +241,7 @@ function updateStats() {
 function saveProgress() {
   localStorage.setItem("subjectMxpr", xp);
   localStorage.setItem("subjectMlevelr", level);
+  window.checkEvolutionNotification();
 }
 
 function loadProgress() {
