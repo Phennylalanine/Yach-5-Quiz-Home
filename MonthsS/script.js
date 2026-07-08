@@ -207,12 +207,6 @@ window.addEventListener("DOMContentLoaded", () => {
       level++;
       feedback.innerHTML += `<br>🎉 Level Up! You are now level ${level}`;
     }
-    if (level >= 5 && levelBefore < 5) {
-  feedback.innerHTML += `<br>🏆 <strong>Congratulations, you've finished!</strong>`;
-  setTimeout(() => {
-    alert("🎉 Congratulations! You've reached Level 5 and completed the quiz!");
-  }, 300);
-}
 
     if (level > levelBefore) {
       triggerConfetti();
@@ -244,7 +238,7 @@ window.addEventListener("DOMContentLoaded", () => {
   function saveProgress() {
     localStorage.setItem("monthsSxpr", xp);
     localStorage.setItem("monthsSlevelr", level);
-  window.checkEvolutionNotification();
+    window.checkEvolutionNotification(); 
   }
 
   function loadProgress() {
@@ -318,5 +312,3 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
-
-
