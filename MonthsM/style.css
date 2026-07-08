@@ -168,19 +168,20 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
 }
 
 .choice-option {
   cursor: default;
   user-select: none;
-  padding: 6px 10px;
+  padding: 12px 18px;
+  font-size: 1.15em;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #f9f9f9;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   transition: background-color 0.2s ease;
-  min-width: 60px;
+  min-width: 90px;
   text-align: center;
 }
 .choice-option:hover {
