@@ -1,6 +1,10 @@
 window.addEventListener("DOMContentLoaded", () => {
-  // 1) IMAGE NAME MAPPING – Enter/modify below
-  const IMAGE_DISPLAY_NAMES = {
+  const container = document.getElementById("overallLevel");
+  const IMG_BASE = "./monster_image/";
+
+  // === CONFIGURATION ===
+  const LEVELS = { EGG: 6, SLIME: 15, EVO2: 30 }; // thresholds
+  const IMAGE_NAMES = {
     shadowPlantEgg: "ヤミタマ",
     plantSlime_1: "ハナゴロ",
     shadowSlime_1: "カゲモチ",
@@ -8,239 +12,220 @@ window.addEventListener("DOMContentLoaded", () => {
     plantEvo_2B: "モリフワ",
     shadowEvo_2A: "スミボウ",
     shadowEvo_2B: "ヨルビト",
+    shadowEvo3A: "シャドウロウ",
+    shadowEvo3B: "グルムドン",
+    shadowEvo3C: "ウィスパップ",
+    shadowEvo3D: "シャドピク",
+    plantEvo3A: "ハナリコ",
+    plantEvo3B: "ツルケン",
+    plantEvo3C: "カメキノ",
+    plantEvo3D: "キカブン",
+    placeholder: "進化中（仮）",
   };
 
-  // 2) Helper for mapped display name
-  function getDisplayName(imgFile) {
-    const key = imgFile.replace(".png", "");
-    return IMAGE_DISPLAY_NAMES[key] || "名称未設定";
-  }
+  const QUIZ_DATA = [
+    "monthsSlevelr",
+    "subjectSlevelr",
+    "eventSlevelr",
+    "familySlevelr",
+    "canSlevelr",
+    "jobSLevelr",
+    "monthsMlevelr",
+    "subjectMlevelr",
+    "eventMlevelr",
+    "familyMlevelr",
+    "characterMlevelr",
+	"canMlevelr",
+"jobsMlevelr",
+  ].map((key) => ({ key, multiplier: key.includes("M") ? 2 : 1 }));
 
-  const container = document.getElementById("overallLevel");
-  const IMG_BASE = "./monster_image/";
+  // === LOCAL STORAGE HELPERS ===
+  const LS = {
+    get: (k) => localStorage.getItem(k),
+    set: (k, v) => localStorage.setItem(k, v),
+    clear: () => localStorage.clear(),
+  };
 
-  // 3) Calculate weighted overall level (same as before)
-  const quizData = [
-    { key: "monthsSlevelr", multiplier: 1 },
-    { key: "subjectSlevelr", multiplier: 1 },
-    { key: "eventSlevelr", multiplier: 1 },
-    { key: "familySlevelr", multiplier: 1 },
-    { key: "characterSlevelr", multiplier: 1 },
-    { key: "canSlevelr", multiplier: 1 },
-    { key: "jobsSlevelr", multiplier: 1 },
-    { key: "monthsMlevelr", multiplier: 1.75 },
-    { key: "subjectsMlevelr", multiplier: 1.75 },
-    { key: "eventMlevelr", multiplier: 1.75 },
-    { key: "familyMlevelr", multiplier: 1.75 },
-    { key: "characterMlevelr", multiplier: 1.75 },
-    { key: "canMlevelr", multiplier: 1.75 },
-    { key: "jobsMlevelr", multiplier: 1.75 },
-  ];
+  // === CALCULATE OVERALL LEVEL ===
+  const storedLevels = Object.fromEntries(
+    QUIZ_DATA.map(({ key }) => [key, parseInt(LS.get(key)) || 0])
+  );
+  const overallLevel = Math.floor(
+    QUIZ_DATA.reduce((sum, { key, multiplier }) => sum + storedLevels[key] * multiplier, 0)
+  );
 
-  const overallLevelRaw = quizData.reduce((sum, { key, multiplier }) => {
-    const value = parseInt(localStorage.getItem(key)) || 0;
-    return sum + value * multiplier;
-  }, 0);
-
-  const overallLevel = Math.floor(overallLevelRaw);
-
-  // 4) Branch and Evo helpers
-  const getBranch = () => localStorage.getItem("branchChoice"); // "plant" | "shadow" | null
-  const setBranch = (b) => localStorage.setItem("branchChoice", b);
-  const getEvo2 = () => localStorage.getItem("evo2Choice"); // "A" | "B" | null
-  const setEvo2 = (c) => localStorage.setItem("evo2Choice", c);
-
-  // 5) Inject responsive styles once (keeps the monster + card centered and
-  //    scaled to fit any screen size, instead of a fixed 400px width that
-  //    overflows on mobile)
-  if (!document.getElementById("overallLevelResponsiveStyle")) {
-    const style = document.createElement("style");
-    style.id = "overallLevelResponsiveStyle";
-    style.textContent = `
-      #overallLevel {
-        max-width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-      }
-      #overallLevel img {
-        width: 100%;
-        max-width: min(90vw, 400px);
-        height: auto;
-        display: block;
-        margin: 0 auto 12px;
-      }
-      #overallLevel .evoChoicesWrap {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: clamp(12px, 4vw, 24px);
-        margin-bottom: 8px;
-      }
-      #overallLevel .evoChoicesWrap > div {
-        flex: 1 1 160px;
-        max-width: 220px;
-      }
-      #overallLevel button {
-        font-size: clamp(14px, 2.5vw, 16px);
-      }
-      #overallLevel .levelLabel {
-        font-size: clamp(14px, 3vw, 18px);
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function clearContainer() {
-    container.innerHTML = "";
-    container.style.textAlign = "center";
-  }
-
-  function img(src, alt = "") {
+  // === UI HELPERS ===
+  const clearContainer = () => (container.innerHTML = "");
+  const makeImg = (src, alt = "") => {
     const i = document.createElement("img");
+    Object.assign(i.style, {
+      maxWidth: "200px",
+      height: "auto",
+      display: "block",
+      margin: "0 auto 12px",
+    });
     i.src = src;
     i.alt = alt;
-    // Sizing now handled by the injected responsive CSS above (width: 100%,
-    // max-width: min(90vw, 400px)) so it scales down gracefully on mobile.
     return i;
-  }
-
-  function btn(label, onClick) {
+  };
+  const makeBtn = (label, onClick) => {
     const b = document.createElement("button");
+    Object.assign(b.style, {
+      margin: "6px",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    });
     b.textContent = label;
-    b.style.margin = "6px";
-    b.style.padding = "8px 12px";
-    b.style.borderRadius = "8px";
-    b.style.cursor = "pointer";
     b.addEventListener("click", onClick);
     return b;
-  }
+  };
+  const makeLabel = (text) => {
+    const d = document.createElement("div");
+    Object.assign(d.style, { margin: "8px 0", fontWeight: "600" });
+    d.textContent = text;
+    return d;
+  };
 
-  function label(text) {
-    const p = document.createElement("div");
-    p.textContent = text;
-    p.className = "levelLabel";
-    p.style.margin = "8px 0";
-    p.style.fontWeight = "600";
-    return p;
-  }
+  const getDisplayName = (f) => IMAGE_NAMES[f.replace(/\.(png|webp)$/, "")] || "名称未設定";
+  const saveMonster = (file) => file && LS.set("selectedMonster", file);
 
+  // === RENDER HELPERS ===
+  const showEvolutionOptions = (options, labelText, onSelect) => {
+    container.appendChild(makeLabel(labelText));
+    const wrap = document.createElement("div");
+    Object.assign(wrap.style, {
+      display: "flex",
+      gap: "24px",
+      justifyContent: "center",
+    });
+
+    options.forEach(({ file, choice }) => {
+      const d = document.createElement("div");
+      d.append(makeImg(`${IMG_BASE}${file}`), makeLabel(getDisplayName(file)));
+      d.append(makeBtn("この進化を選ぶ", () => onSelect(choice, file)));
+      wrap.appendChild(d);
+    });
+
+    container.appendChild(wrap);
+  };
+
+  // === RENDER LOGIC ===
   function render() {
     clearContainer();
 
-    // Level < 5: show egg
-    if (overallLevel < 5) {
-      const imgFile = "shadowPlantEgg.png";
-      container.appendChild(img(`${IMG_BASE}${imgFile}`, "Egg"));
-      container.appendChild(label(getDisplayName(imgFile)));
-      container.appendChild(label(`レベル：${overallLevel}`));
+    const branch = LS.get("branchChoice");
+    const evo2 = LS.get("evo2Choice");
+    const evo3 = LS.get("evo3Choice");
+
+    // 🥚 Egg stage
+    if (overallLevel < LEVELS.EGG) {
+      const file = "shadowPlantEgg.png";
+      container.append(makeImg(`${IMG_BASE}${file}`), makeLabel(getDisplayName(file)));
+      container.append(makeLabel(`レベル：${overallLevel}`));
+      saveMonster(file);
       return;
     }
 
-    // Need/select branch
-    const branch = getBranch();
+    // 🌱 Choose branch
     if (!branch) {
-      container.appendChild(label("進化の分岐を選んでください："));
-
-      const thumbs = document.createElement("div");
-      thumbs.className = "evoChoicesWrap";
-
-      const plantFile = "plantSlime_1.png";
-      const shadowFile = "shadowSlime_1.png";
-
-      const plantWrap = document.createElement("div");
-      plantWrap.appendChild(img(`${IMG_BASE}${plantFile}`, "植物スライム"));
-      plantWrap.appendChild(label(getDisplayName(plantFile)));
-
-      const shadowWrap = document.createElement("div");
-      shadowWrap.appendChild(img(`${IMG_BASE}${shadowFile}`, "シャドウスライム"));
-      shadowWrap.appendChild(label(getDisplayName(shadowFile)));
-
-      thumbs.appendChild(plantWrap);
-      thumbs.appendChild(shadowWrap);
-      container.appendChild(thumbs);
-
-      const choosePlant = btn("植物（プラント）を選ぶ", () => {
-        setBranch("plant");
-        render();
-      });
-      const chooseShadow = btn("シャドウを選ぶ", () => {
-        setBranch("shadow");
-        render();
-      });
-      container.appendChild(choosePlant);
-      container.appendChild(chooseShadow);
-      container.appendChild(label(`現在レベル：${overallLevel}`));
-      return;
-    }
-
-    // Branch chosen, level < 10: show branch slime
-    if (overallLevel < 10) {
-      const slimeFile = branch === "plant" ? "plantSlime_1.png" : "shadowSlime_1.png";
-      container.appendChild(img(`${IMG_BASE}${slimeFile}`, `${branch} slime`));
-      container.appendChild(label(getDisplayName(slimeFile)));
-      container.appendChild(label(`分岐：${branch === "plant" ? "植物（プラント）" : "シャドウ"}　｜　レベル：${overallLevel}`));
-      return;
-    }
-
-    // Level >= 10 → evo choice A/B
-    const evo2 = getEvo2();
-    if (!evo2) {
-      container.appendChild(label("第2進化を選んでください（1回のみ）："));
-
-      const pickWrap = document.createElement("div");
-      pickWrap.className = "evoChoicesWrap";
-
-      const aFile = branch === "plant" ? "plantEvo_2A.png" : "shadowEvo_2A.png";
-      const bFile = branch === "plant" ? "plantEvo_2B.png" : "shadowEvo_2B.png";
-
-      const aWrap = document.createElement("div");
-      aWrap.appendChild(img(`${IMG_BASE}${aFile}`, "進化A"));
-      aWrap.appendChild(label(getDisplayName(aFile)));
-      const aBtn = btn("進化A を決定", () => {
-        setEvo2("A");
-        render();
-      });
-      aWrap.appendChild(aBtn);
-
-      const bWrap = document.createElement("div");
-      bWrap.appendChild(img(`${IMG_BASE}${bFile}`, "進化B"));
-      bWrap.appendChild(label(getDisplayName(bFile)));
-      const bBtn = btn("進化B を決定", () => {
-        setEvo2("B");
-        render();
-      });
-      bWrap.appendChild(bBtn);
-
-      pickWrap.appendChild(aWrap);
-      pickWrap.appendChild(bWrap);
-      container.appendChild(pickWrap);
-      container.appendChild(
-        label(`分岐：${branch === "plant" ? "植物（プラント）" : "シャドウ"}　｜　レベル：${overallLevel}`)
+      showEvolutionOptions(
+        [
+          { file: "plantSlime_1.png", choice: "plant" },
+          { file: "shadowSlime_1.png", choice: "shadow" },
+        ],
+        "進化の分岐を選んでください：",
+        (choice, file) => {
+          LS.set("branchChoice", choice);
+          saveMonster(file);
+          render();
+        }
       );
+      container.append(makeLabel(`現在レベル：${overallLevel}`));
       return;
     }
 
-    // evo2 chosen → show selected evolution image and its mapped name
-    const finalFile =
-      branch === "plant"
-        ? (evo2 === "A" ? "plantEvo_2A.png" : "plantEvo_2B.png")
-        : (evo2 === "A" ? "shadowEvo_2A.png" : "shadowEvo_2B.png");
+    // 🧫 Slime stage
+    if (overallLevel < LEVELS.SLIME) {
+      const file = `${branch}Slime_1.png`;
+      container.append(makeImg(`${IMG_BASE}${file}`), makeLabel(getDisplayName(file)));
+      container.append(makeLabel(`分岐：${branch} ｜ レベル：${overallLevel}`));
+      saveMonster(file);
+      return;
+    }
 
-    container.appendChild(img(`${IMG_BASE}${finalFile}`, "進化結果"));
-    container.appendChild(label(getDisplayName(finalFile)));
-    container.appendChild(
-      label(
-        `分岐：${branch === "plant" ? "植物（プラント）" : "シャドウ"}　｜　進化：${evo2}　｜　レベル：${overallLevel}`
-      )
+    // 🌿 Second evolution choice
+    if (!evo2) {
+      showEvolutionOptions(
+        [
+          { file: `${branch}Evo_2A.png`, choice: "A" },
+          { file: `${branch}Evo_2B.png`, choice: "B" },
+        ],
+        "第2進化を選んでください（1回のみ）：",
+        (choice, file) => {
+          LS.set("evo2Choice", choice);
+          saveMonster(file);
+          render();
+        }
+      );
+      container.append(makeLabel(`分岐：${branch} ｜ レベル：${overallLevel}`));
+      return;
+    }
+
+    // 🌸 Third evolution choice
+    if (overallLevel >= LEVELS.EVO2) {
+      if (!evo3) {
+        const options =
+          evo2 === "A"
+            ? [
+                { file: `${branch}Evo3A.png`, choice: "A" },
+                { file: `${branch}Evo3B.png`, choice: "B" },
+              ]
+            : [
+                { file: `${branch}Evo3C.png`, choice: "C" },
+                { file: `${branch}Evo3D.png`, choice: "D" },
+              ];
+
+        showEvolutionOptions(options, "第3進化を選んでください（1回のみ）：", (choice, file) => {
+          LS.set("evo3Choice", choice);
+          saveMonster(file);
+          render();
+        });
+        container.append(makeLabel(`レベル：${overallLevel}`));
+        return;
+      }
+
+      // 🌟 Final form
+      const finalFile = `${branch}Evo3${evo3}.png`;
+      container.append(
+        makeImg(`${IMG_BASE}${finalFile}`, "最終進化形態"),
+        makeLabel(getDisplayName(finalFile)),
+        makeLabel(`最終進化：${evo3}`),
+        makeLabel(`レベル：${overallLevel}`)
+      );
+      saveMonster(finalFile);
+      return;
+    }
+
+    // 🌾 Evo2 form (intermediate)
+    const evo2File = `${branch}Evo_2${evo2}.png`;
+    container.append(
+      makeImg(`${IMG_BASE}${evo2File}`),
+      makeLabel(getDisplayName(evo2File)),
+      makeLabel(`分岐：${branch} ｜ 進化：${evo2} ｜ レベル：${overallLevel}`)
     );
+    saveMonster(evo2File);
   }
 
-  render();
+  // === QUIZ CARD LEVEL DISPLAY ===
+  function updateQuizCardLevels() {
+    document.querySelectorAll(".levelValue").forEach((span) => {
+      const key = span.dataset.key;
+      span.textContent = `(Level: ${LS.get(key) || 0})`;
+    });
+  }
 
-  // Level-by-span updater (unchanged)
-  document.querySelectorAll(".levelValue").forEach((span) => {
-    const key = span.getAttribute("data-key");
-    const levelValue = parseInt(localStorage.getItem(key)) || 0;
-    span.textContent = `(Level: ${levelValue})`;
-  });
+  // === RENDER + INITIALIZE ===
+  render();
+  updateQuizCardLevels();
 });
